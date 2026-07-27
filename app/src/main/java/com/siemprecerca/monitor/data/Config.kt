@@ -12,7 +12,7 @@ object Config {
 
     // Credenciales para auto-login (la app renueva el JWT sola)
     const val LOGIN_EMAIL = "monitor@siemprecerca.app"
-    const val LOGIN_PASSWORD = "M0n1t0r\$SC2026!"
+    const val LOGIN_PASSWORD = "M0n1t0rSC2026"
 
     // SMS
     const val DEFAULT_SMS_TEMPLATE =
