@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>CFBundleName</key>
+    <string>SiempreCerca Monitor</string>
+    <key>CFBundleDisplayName</key>
+    <string>SiempreCerca</string>
+    <key>CFBundleIdentifier</key>
+    <string>com.siemprecerca.monitor</string>
+    <key>CFBundleVersion</key>
+    <string>1</string>
+    <key>CFBundleShortVersionString</key>
+    <string>1.0.0</string>
+    <key>MinimumOSVersion</key>
+    <string>15.0</string>
+
+    <!-- Background Modes: BLE -->
+    <key>UIBackgroundModes</key>
+    <array>
+        <string>bluetooth-central</string>
+    </array>
+
+    <!-- Permisos -->
+    <key>NSBluetoothAlwaysUsageDescription</key>
+    <string>SiempreCerca necesita Bluetooth para conectarse al reloj de emergencia y recibir alertas SOS.</string>
+    <key>NSBluetoothPeripheralUsageDescription</key>
+    <string>SiempreCerca necesita Bluetooth para conectarse al reloj de emergencia.</string>
+
+    <!-- Notificaciones -->
+    <key>NSUserNotificationsUsageDescription</key>
+    <string>SiempreCerca envia notificaciones cuando se recibe una alerta de emergencia.</string>
+</dict>
+</plist>
