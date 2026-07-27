@@ -128,6 +128,56 @@
                 android:textColor="#CCCCCC" />
         </LinearLayout>
 
+        <!-- Health Check Card -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/card_background"
+            android:padding="20dp"
+            android:layout_marginBottom="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="8dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Health Check"
+                    android:textSize="18sp"
+                    android:textColor="#4CAF50"
+                    android:textStyle="bold" />
+
+                <Switch
+                    android:id="@+id/switchHealth"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:thumbTint="#4CAF50"
+                    android:trackTint="#333355" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Envia un ping cada 1 hora al servidor. Si no llega, se genera una alerta."
+                android:textSize="13sp"
+                android:textColor="#888888"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:id="@+id/tvHealthStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Health check activado"
+                android:textSize="15sp"
+                android:textColor="#CCCCCC" />
+        </LinearLayout>
+
         <!-- Contacts Card -->
         <LinearLayout
             android:layout_width="match_parent"

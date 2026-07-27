@@ -31,6 +31,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var tvLastAlert: TextView
     private lateinit var tvAlertCount: TextView
     private lateinit var tvContacts: TextView
+    private lateinit var tvHealthStatus: TextView
+    private lateinit var switchHealth: android.widget.Switch
     private lateinit var statusIndicator: View
     private lateinit var btnReconnect: Button
     private lateinit var btnReset: Button
@@ -87,9 +89,18 @@ class MainActivity : AppCompatActivity() {
         tvLastAlert = findViewById(R.id.tvLastAlert)
         tvAlertCount = findViewById(R.id.tvAlertCount)
         tvContacts = findViewById(R.id.tvContacts)
+        tvHealthStatus = findViewById(R.id.tvHealthStatus)
+        switchHealth = findViewById(R.id.switchHealth)
         statusIndicator = findViewById(R.id.statusIndicator)
         btnReconnect = findViewById(R.id.btnReconnect)
         btnReset = findViewById(R.id.btnReset)
+
+        // Health check toggle
+        switchHealth.isChecked = prefs.isHealthCheckEnabled
+        switchHealth.setOnCheckedChangeListener { _, isChecked ->
+            prefs.isHealthCheckEnabled = isChecked
+            updateUI()
+        }
 
         btnReconnect.setOnClickListener {
             FlicBleService.start(this)
@@ -137,6 +148,15 @@ class MainActivity : AppCompatActivity() {
             tvStatus.text = "INICIANDO..."
             statusIndicator.setBackgroundResource(R.drawable.indicator_red)
             tvBluetooth.text = "Bluetooth: --"
+        }
+
+        // Health check
+        val lastHealth = prefs.lastHealthTime
+        tvHealthStatus.text = if (prefs.isHealthCheckEnabled) {
+            if (lastHealth > 0) "Ultimo health: ${dateFormat.format(Date(lastHealth))}"
+            else "Health activado, esperando primer ping..."
+        } else {
+            "Health check desactivado"
         }
 
         // Alertas

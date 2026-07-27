@@ -199,6 +199,54 @@ class AlertManager(private val context: Context) {
         })
     }
 
+    /**
+     * Envia health ping al servidor para confirmar que el dispositivo esta
+     * conectado y funcionando. Se envia cada 1 hora.
+     * Si el servidor no recibe health en 2h, genera alerta de inactividad.
+     */
+    fun sendHealthPing() {
+        if (!prefs.isHealthCheckEnabled) return
+
+        val deviceConfig = prefs.getDeviceConfig() ?: return
+        val serverConfig = prefs.getServerConfig()
+        val url = "${serverConfig.baseUrl}/api/webhooks/flic/alert"
+
+        val jsonBody = gson.toJson(AlertPayload(
+            event = "health",
+            source = "siemprecerca_monitor",
+            appVersion = "1.0.0"
+        ))
+
+        val request = Request.Builder()
+            .url(url)
+            .post(jsonBody.toRequestBody("application/json".toMediaType()))
+            .addHeader("X-Webhook-Secret", serverConfig.webhookSecret)
+            .addHeader("button-serial-number", deviceConfig.serialNumber)
+            .addHeader("button-name", "Flic ${deviceConfig.serialNumber}")
+            .build()
+
+        httpClient.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                Log.e(TAG, "Health ping fallido: ${e.message}")
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                response.use {
+                    if (it.isSuccessful) {
+                        prefs.lastHealthTime = System.currentTimeMillis()
+                        Log.i(TAG, "Health ping OK")
+                    } else if (it.code == 401) {
+                        authManager.login { success ->
+                            if (success) sendHealthPing()
+                        }
+                    } else {
+                        Log.e(TAG, "Health ping error: ${it.code}")
+                    }
+                }
+            }
+        })
+    }
+
     private fun ByteArray.toHexString(): String =
         joinToString(" ") { "%02X".format(it) }
 }

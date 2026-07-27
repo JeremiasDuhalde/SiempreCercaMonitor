@@ -39,6 +39,9 @@ class FlicBleService : Service() {
         private const val RECONNECT_DELAY_MS = 5_000L
         private const val MAX_RECONNECT_DELAY_MS = 60_000L
 
+        // Health check cada 1 hora (en ms)
+        private const val HEALTH_INTERVAL_MS = 3_600_000L
+
         const val ACTION_START = "com.siemprecerca.monitor.START"
         const val ACTION_STOP = "com.siemprecerca.monitor.STOP"
 
@@ -250,6 +253,7 @@ class FlicBleService : Service() {
                     reconnectDelay = RECONNECT_DELAY_MS
                     Log.i(TAG, "Conectado al FLIC")
                     updateNotification("Conectado - Monitoreando SOS")
+                    startHealthCheck()
                     try {
                         gatt.discoverServices()
                     } catch (e: SecurityException) {
@@ -258,6 +262,7 @@ class FlicBleService : Service() {
                 }
                 BluetoothProfile.STATE_DISCONNECTED -> {
                     isConnected = false
+                    stopHealthCheck()
                     Log.w(TAG, "Desconectado del FLIC (status: $status)")
                     updateNotification("Desconectado - Reconectando...")
                     try { gatt.close() } catch (_: SecurityException) {}
@@ -323,6 +328,33 @@ class FlicBleService : Service() {
         }
     }
 
+    // --- Health Check ---
+
+    private val healthRunnable = object : Runnable {
+        override fun run() {
+            if (isConnected && prefs.isHealthCheckEnabled) {
+                Log.i(TAG, "Enviando health ping...")
+                alertManager.sendHealthPing()
+            }
+            handler.postDelayed(this, HEALTH_INTERVAL_MS)
+        }
+    }
+
+    private fun startHealthCheck() {
+        if (!prefs.isHealthCheckEnabled) return
+        // Enviar primer health inmediatamente al conectar
+        handler.post {
+            alertManager.sendHealthPing()
+        }
+        // Programar cada 1 hora
+        handler.postDelayed(healthRunnable, HEALTH_INTERVAL_MS)
+        Log.i(TAG, "Health check activado (cada ${HEALTH_INTERVAL_MS / 60000} min)")
+    }
+
+    private fun stopHealthCheck() {
+        handler.removeCallbacks(healthRunnable)
+    }
+
     // --- Reconnection ---
 
     private fun scheduleReconnect() {
@@ -342,7 +374,7 @@ class FlicBleService : Service() {
     private fun createNotificationChannels() {
         val statusChannel = NotificationChannel(
             CHANNEL_ID,
-            "Monitor SiempreCerca",
+            "Siempre Cerca",
             NotificationManager.IMPORTANCE_LOW
         ).apply {
             description = "Estado de la conexion con el reloj"
@@ -372,7 +404,7 @@ class FlicBleService : Service() {
         )
 
         return NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle("SiempreCerca Monitor")
+            .setContentTitle("Siempre Cerca")
             .setContentText(text)
             .setSmallIcon(R.drawable.ic_monitor)
             .setOngoing(true)

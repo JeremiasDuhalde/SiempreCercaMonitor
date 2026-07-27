@@ -30,6 +30,8 @@ class Preferences(context: Context) {
         private const val KEY_LAST_ALERT_TIME = "last_alert_time"
         private const val KEY_SMS_ENABLED = "sms_enabled"
         private const val KEY_SMS_MESSAGE_TEMPLATE = "sms_message_template"
+        private const val KEY_HEALTH_CHECK_ENABLED = "health_check_enabled"
+        private const val KEY_LAST_HEALTH_TIME = "last_health_time"
     }
 
     var isSetupComplete: Boolean
@@ -111,4 +113,14 @@ class Preferences(context: Context) {
     var lastAlertTime: Long
         get() = prefs.getLong(KEY_LAST_ALERT_TIME, 0)
         set(value) = prefs.edit().putLong(KEY_LAST_ALERT_TIME, value).apply()
+
+    // --- Health Check ---
+
+    var isHealthCheckEnabled: Boolean
+        get() = prefs.getBoolean(KEY_HEALTH_CHECK_ENABLED, true)
+        set(value) = prefs.edit().putBoolean(KEY_HEALTH_CHECK_ENABLED, value).apply()
+
+    var lastHealthTime: Long
+        get() = prefs.getLong(KEY_LAST_HEALTH_TIME, 0)
+        set(value) = prefs.edit().putLong(KEY_LAST_HEALTH_TIME, value).apply()
 }
