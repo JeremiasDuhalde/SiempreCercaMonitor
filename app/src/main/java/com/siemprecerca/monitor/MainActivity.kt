@@ -1,8 +1,10 @@
 package com.siemprecerca.monitor
 
 import android.content.*
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.os.IBinder
 import android.view.View
 import android.widget.Button
@@ -11,10 +13,17 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.FileProvider
 import com.siemprecerca.monitor.data.AlertManager
+import com.siemprecerca.monitor.data.Config
 import com.siemprecerca.monitor.data.Preferences
 import com.siemprecerca.monitor.service.FlicBleService
 import io.flic.flic2libandroid.Flic2Manager
+import okhttp3.*
+import org.json.JSONObject
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -47,6 +56,9 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
             }
         }
+
+        // Boton actualizar
+        findViewById<Button>(R.id.btnUpdate).setOnClickListener { checkForUpdate() }
 
         findViewById<Button>(R.id.btnReset).setOnClickListener {
             AlertDialog.Builder(this).setTitle("Reconfigurar").setMessage("Detener y reconfigurar?")
@@ -171,6 +183,128 @@ class MainActivity : AppCompatActivity() {
             } else "SMS: Desactivado"
             findViewById<TextView>(R.id.tvContacts)?.text = "$smsText\n${ct.joinToString("\n") { "  ${it.name}: ${it.phone}" }}"
         } catch (_: Exception) {}
+    }
+
+    // --- Auto-update ---
+
+    private fun checkForUpdate() {
+        val btn = findViewById<Button>(R.id.btnUpdate)
+        btn.text = "Verificando..."
+        btn.isEnabled = false
+
+        val client = OkHttpClient()
+        val url = "${Config.BASE_URL}/monitor/version.json"
+
+        client.newCall(Request.Builder().url(url).build()).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                runOnUiThread {
+                    btn.text = "Buscar actualizacion"
+                    btn.isEnabled = true
+                    Toast.makeText(this@MainActivity, "Error: sin conexion", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                response.use {
+                    try {
+                        val json = JSONObject(it.body?.string() ?: "{}")
+                        val remoteVersion = json.optString("version", "")
+                        val remoteCode = json.optInt("versionCode", 0)
+                        val apkUrl = json.optString("url", "")
+
+                        val currentCode = try {
+                            packageManager.getPackageInfo(packageName, 0).let { pi ->
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) pi.longVersionCode.toInt()
+                                else @Suppress("DEPRECATION") pi.versionCode
+                            }
+                        } catch (_: Exception) { 0 }
+
+                        runOnUiThread {
+                            btn.text = "Buscar actualizacion"
+                            btn.isEnabled = true
+
+                            if (remoteCode > currentCode && apkUrl.isNotBlank()) {
+                                AlertDialog.Builder(this@MainActivity)
+                                    .setTitle("Actualizacion disponible")
+                                    .setMessage("Version $remoteVersion disponible. Descargar e instalar?")
+                                    .setPositiveButton("Actualizar") { _, _ ->
+                                        downloadAndInstall("${Config.BASE_URL}$apkUrl")
+                                    }
+                                    .setNegativeButton("Despues", null)
+                                    .show()
+                            } else {
+                                Toast.makeText(this@MainActivity, "Ya tenes la ultima version", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    } catch (e: Exception) {
+                        runOnUiThread {
+                            btn.text = "Buscar actualizacion"
+                            btn.isEnabled = true
+                            Toast.makeText(this@MainActivity, "Error verificando: ${e.message}", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
+            }
+        })
+    }
+
+    private fun downloadAndInstall(apkUrl: String) {
+        Toast.makeText(this, "Descargando actualizacion...", Toast.LENGTH_LONG).show()
+        val btn = findViewById<Button>(R.id.btnUpdate)
+        btn.text = "Descargando..."
+        btn.isEnabled = false
+
+        val client = OkHttpClient()
+        client.newCall(Request.Builder().url(apkUrl).build()).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                runOnUiThread {
+                    btn.text = "Buscar actualizacion"
+                    btn.isEnabled = true
+                    Toast.makeText(this@MainActivity, "Error descargando", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                response.use { resp ->
+                    try {
+                        val apkFile = File(getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), "siemprecerca-update.apk")
+                        FileOutputStream(apkFile).use { fos ->
+                            resp.body?.byteStream()?.copyTo(fos)
+                        }
+
+                        runOnUiThread {
+                            btn.text = "Buscar actualizacion"
+                            btn.isEnabled = true
+                            installApk(apkFile)
+                        }
+                    } catch (e: Exception) {
+                        runOnUiThread {
+                            btn.text = "Buscar actualizacion"
+                            btn.isEnabled = true
+                            Toast.makeText(this@MainActivity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
+            }
+        })
+    }
+
+    private fun installApk(file: File) {
+        try {
+            val uri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                FileProvider.getUriForFile(this, "$packageName.fileprovider", file)
+            } else {
+                Uri.fromFile(file)
+            }
+
+            val intent = Intent(Intent.ACTION_VIEW).apply {
+                setDataAndType(uri, "application/vnd.android.package-archive")
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_GRANT_READ_URI_PERMISSION
+            }
+            startActivity(intent)
+        } catch (e: Exception) {
+            Toast.makeText(this, "Error instalando: ${e.message}", Toast.LENGTH_LONG).show()
+        }
     }
 
     private val conn = object : ServiceConnection {

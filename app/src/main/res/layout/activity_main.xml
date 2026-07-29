@@ -255,6 +255,16 @@
             android:layout_marginBottom="12dp" />
 
         <Button
+            android:id="@+id/btnUpdate"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:text="Buscar actualizacion"
+            android:textSize="16sp"
+            android:backgroundTint="#4CAF50"
+            android:textColor="#FFFFFF"
+            android:layout_marginBottom="12dp" />
+
+        <Button
             android:id="@+id/btnReset"
             android:layout_width="match_parent"
             android:layout_height="52dp"
@@ -268,7 +278,7 @@
             android:id="@+id/tvVersion"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="v2.6.0"
+            android:text="v2.7.0"
             android:textSize="12sp"
             android:textColor="#555555"
             android:layout_marginTop="24dp" />
