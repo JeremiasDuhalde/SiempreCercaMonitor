@@ -2,30 +2,39 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- Bluetooth BLE -->
+    <!-- Bluetooth BLE: permisos legacy (Android 11 y menor) -->
     <uses-permission android:name="android.permission.BLUETOOTH" android:maxSdkVersion="30" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" android:maxSdkVersion="30" />
+
+    <!-- Bluetooth BLE: permisos nuevos (Android 12+) -->
     <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+
+    <!-- Ubicacion: necesario para BLE scan en Android 6-11 -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
-    <!-- SMS -->
+    <!-- SMS (opcional, la app funciona sin esto) -->
     <uses-permission android:name="android.permission.SEND_SMS" />
 
     <!-- Internet -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
-    <!-- Foreground service y boot -->
+    <!-- Foreground service -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE"
+        tools:targetApi="34" />
+
+    <!-- Boot y bateria -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+
+    <!-- Notificaciones (Android 13+) -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
-    <!-- Vibrar para feedback -->
+    <!-- Vibrar -->
     <uses-permission android:name="android.permission.VIBRATE" />
 
     <uses-feature android:name="android.hardware.bluetooth_le" android:required="true" />
@@ -36,10 +45,8 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/Theme.SiempreCercaMonitor"
-        tools:targetApi="34">
+        android:theme="@style/Theme.SiempreCercaMonitor">
 
-        <!-- Main Activity -->
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -50,19 +57,17 @@
             </intent-filter>
         </activity>
 
-        <!-- Setup Activity -->
         <activity
             android:name=".SetupActivity"
             android:exported="false"
             android:launchMode="singleTop" />
 
-        <!-- BLE Foreground Service -->
         <service
             android:name=".service.FlicBleService"
             android:exported="false"
-            android:foregroundServiceType="connectedDevice" />
+            android:foregroundServiceType="connectedDevice"
+            tools:targetApi="29" />
 
-        <!-- Boot Receiver -->
         <receiver
             android:name=".receiver.BootReceiver"
             android:exported="true"
@@ -70,10 +75,10 @@
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+                <action android:name="com.htc.intent.action.QUICKBOOT_POWERON" />
             </intent-filter>
         </receiver>
 
-        <!-- Bluetooth State Receiver -->
         <receiver
             android:name=".receiver.BluetoothStateReceiver"
             android:exported="true">

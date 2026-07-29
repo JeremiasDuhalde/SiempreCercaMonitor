@@ -3,175 +3,61 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#1A1A2E">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="vertical" android:padding="24dp">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="24dp">
-
-        <!-- Titulo -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="SiempreCerca"
-            android:textSize="28sp"
-            android:textColor="#E94560"
-            android:textStyle="bold"
-            android:layout_marginBottom="4dp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Configurar monitor"
-            android:textSize="16sp"
-            android:textColor="#888888"
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="Siempre Cerca" android:textSize="28sp" android:textColor="#E94560"
+            android:textStyle="bold" android:layout_marginBottom="4dp" />
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="Configurar monitor" android:textSize="16sp" android:textColor="#888888"
             android:layout_marginBottom="8dp" />
+        <TextView android:id="@+id/tvServerStatus" android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:text="Conectando..."
+            android:textSize="14sp" android:textColor="#FFAA00" android:layout_marginBottom="32dp" />
 
-        <!-- Status servidor -->
-        <TextView
-            android:id="@+id/tvServerStatus"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Conectando al servidor..."
-            android:textSize="14sp"
-            android:textColor="#FFAA00"
-            android:layout_marginBottom="32dp" />
-
-        <!-- PASO 1: Paciente -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="PASO 1 - PACIENTE"
-            android:textSize="13sp"
-            android:textColor="#E94560"
-            android:textStyle="bold"
-            android:letterSpacing="0.1"
-            android:layout_marginBottom="12dp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Ingresa el numero de paciente que te fue asignado"
-            android:textSize="14sp"
-            android:textColor="#888888"
-            android:layout_marginBottom="12dp" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="8dp">
-
-            <EditText
-                android:id="@+id/etClientId"
-                android:layout_width="0dp"
-                android:layout_height="52dp"
-                android:layout_weight="1"
-                android:hint="Ej: 10"
-                android:inputType="number"
-                android:textColor="#FFFFFF"
-                android:textColorHint="#666666"
-                android:textSize="20sp"
-                android:gravity="center"
-                android:background="@drawable/input_background"
-                android:paddingHorizontal="16dp"
-                android:layout_marginEnd="8dp" />
-
-            <Button
-                android:id="@+id/btnBuscarPaciente"
-                android:layout_width="wrap_content"
-                android:layout_height="52dp"
-                android:text="Buscar"
-                android:textSize="14sp"
-                android:backgroundTint="#333355"
+        <!-- PASO 1 -->
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="PASO 1 — PACIENTE" android:textSize="13sp" android:textColor="#E94560"
+            android:textStyle="bold" android:layout_marginBottom="12dp" />
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="horizontal" android:layout_marginBottom="8dp">
+            <EditText android:id="@+id/etClientId" android:layout_width="0dp"
+                android:layout_height="52dp" android:layout_weight="1" android:hint="Ej: 10"
+                android:inputType="number" android:textColor="#FFFFFF" android:textColorHint="#666666"
+                android:textSize="20sp" android:gravity="center" android:background="@drawable/input_background"
+                android:paddingHorizontal="16dp" android:layout_marginEnd="8dp" />
+            <Button android:id="@+id/btnBuscarPaciente" android:layout_width="wrap_content"
+                android:layout_height="52dp" android:text="Buscar" android:backgroundTint="#333355"
                 android:textColor="#FFFFFF" />
         </LinearLayout>
+        <TextView android:id="@+id/tvClientName" android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:textSize="16sp" android:textColor="#4CAF50"
+            android:visibility="gone" android:layout_marginBottom="32dp" />
 
-        <TextView
-            android:id="@+id/tvClientName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:textColor="#4CAF50"
-            android:visibility="gone"
-            android:layout_marginBottom="32dp" />
+        <!-- PASO 2 -->
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="PASO 2 — VINCULAR FLIC" android:textSize="13sp" android:textColor="#E94560"
+            android:textStyle="bold" android:layout_marginBottom="12dp" />
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="Toca el boton de abajo y luego presiona tu boton FLIC. Acepta la vinculacion cuando aparezca el dialogo."
+            android:textSize="14sp" android:textColor="#888888" android:layout_marginBottom="12dp" />
 
-        <!-- PASO 2: Reloj -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="PASO 2 - RELOJ"
-            android:textSize="13sp"
-            android:textColor="#E94560"
-            android:textStyle="bold"
-            android:letterSpacing="0.1"
-            android:layout_marginBottom="12dp" />
+        <Button android:id="@+id/btnScan" android:layout_width="match_parent"
+            android:layout_height="52dp" android:text="Buscar y vincular FLIC" android:textSize="16sp"
+            android:backgroundTint="#333355" android:textColor="#FFFFFF" android:layout_marginBottom="8dp" />
+        <ProgressBar android:id="@+id/progressBar" android:layout_width="match_parent"
+            android:layout_height="4dp" style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+            android:indeterminate="true" android:visibility="gone" android:layout_marginBottom="8dp" />
+        <TextView android:id="@+id/tvScanStatus" android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:text="" android:textSize="14sp"
+            android:textColor="#888888" android:layout_marginBottom="8dp" />
+        <TextView android:id="@+id/tvSelectedDevice" android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:textSize="16sp" android:textColor="#4CAF50"
+            android:visibility="gone" android:layout_marginBottom="32dp" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Asegurate que el reloj este cerca y con Bluetooth encendido"
-            android:textSize="14sp"
-            android:textColor="#888888"
-            android:layout_marginBottom="12dp" />
-
-        <Button
-            android:id="@+id/btnScan"
-            android:layout_width="match_parent"
-            android:layout_height="52dp"
-            android:text="Buscar reloj"
-            android:textSize="16sp"
-            android:backgroundTint="#333355"
-            android:textColor="#FFFFFF"
-            android:layout_marginBottom="8dp" />
-
-        <ProgressBar
-            android:id="@+id/progressBar"
-            android:layout_width="match_parent"
-            android:layout_height="4dp"
-            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-            android:indeterminate="true"
-            android:visibility="gone"
-            android:layout_marginBottom="8dp" />
-
-        <TextView
-            android:id="@+id/tvScanStatus"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text=""
-            android:textSize="14sp"
-            android:textColor="#888888"
-            android:layout_marginBottom="8dp" />
-
-        <ListView
-            android:id="@+id/lvDevices"
-            android:layout_width="match_parent"
-            android:layout_height="120dp"
-            android:background="@drawable/input_background"
-            android:divider="#333355"
-            android:dividerHeight="1dp"
-            android:layout_marginBottom="8dp" />
-
-        <TextView
-            android:id="@+id/tvSelectedDevice"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:textColor="#4CAF50"
-            android:visibility="gone"
-            android:layout_marginBottom="32dp" />
-
-        <!-- Activar -->
-        <Button
-            android:id="@+id/btnSave"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:text="Activar monitoreo"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:backgroundTint="#E94560"
-            android:textColor="#FFFFFF" />
-
+        <Button android:id="@+id/btnSave" android:layout_width="match_parent"
+            android:layout_height="60dp" android:text="Activar monitoreo" android:textSize="18sp"
+            android:textStyle="bold" android:backgroundTint="#E94560" android:textColor="#FFFFFF" />
     </LinearLayout>
 </ScrollView>

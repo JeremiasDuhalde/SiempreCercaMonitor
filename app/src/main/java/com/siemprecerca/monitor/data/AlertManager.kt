@@ -23,8 +23,8 @@ class AlertManager(private val context: Context) {
 
     companion object {
         private const val TAG = "AlertManager"
-        // Cooldown entre alertas para evitar spam (30 segundos)
-        private const val ALERT_COOLDOWN_MS = 30_000L
+        // Cooldown entre alertas para evitar spam (5 segundos)
+        private const val ALERT_COOLDOWN_MS = 5_000L
     }
 
     private val prefs = Preferences(context)

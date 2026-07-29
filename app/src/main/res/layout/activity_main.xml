@@ -218,9 +218,10 @@
 
         <!-- Version -->
         <TextView
+            android:id="@+id/tvVersion"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="v1.0.0"
+            android:text="v1.2.0"
             android:textSize="12sp"
             android:textColor="#555555"
             android:layout_marginTop="24dp" />

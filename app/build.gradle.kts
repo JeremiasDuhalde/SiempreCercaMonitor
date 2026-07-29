@@ -11,8 +11,8 @@ android {
         applicationId = "com.siemprecerca.monitor"
         minSdk = 26
         targetSdk = 36
-        versionCode = 1
-        versionName = "1.0.0"
+        versionCode = 20
+        versionName = "2.5.0"
     }
 
     buildTypes {
@@ -62,4 +62,7 @@ dependencies {
     // Lifecycle
     implementation("androidx.lifecycle:lifecycle-service:2.8.3")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.3")
+
+    // Flic 2 SDK
+    implementation("com.github.50ButtonsEach:flic2lib-android:1.3.1")
 }
