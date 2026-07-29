@@ -98,14 +98,26 @@ class MonitorApp : Application() {
                     Log.e(TAG, "Error leyendo bateria FLIC: ${e.message}")
                 }
 
-                // Actualizar serial y nombre real del FLIC en la config
+                // Actualizar serial, MAC y nombre real del FLIC en la config
                 val deviceConfig = prefs.getDeviceConfig()
                 if (deviceConfig != null) {
                     val realSerial = button.serialNumber
-                    val realName = button.name
+                    val realMac = button.bdAddr
+                    var updated = false
+                    var newConfig = deviceConfig
+
                     if (!realSerial.isNullOrBlank() && deviceConfig.serialNumber != realSerial) {
-                        prefs.saveDeviceConfig(deviceConfig.copy(serialNumber = realSerial))
+                        newConfig = newConfig.copy(serialNumber = realSerial)
+                        updated = true
                         Log.i(TAG, "Serial actualizado a: $realSerial")
+                    }
+                    if (!realMac.isNullOrBlank() && deviceConfig.macAddress != realMac) {
+                        newConfig = newConfig.copy(macAddress = realMac)
+                        updated = true
+                        Log.i(TAG, "MAC actualizada a: $realMac")
+                    }
+                    if (updated) {
+                        prefs.saveDeviceConfig(newConfig)
                     }
                 }
 

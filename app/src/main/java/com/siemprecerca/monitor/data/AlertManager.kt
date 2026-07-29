@@ -154,7 +154,7 @@ class AlertManager(private val context: Context) {
         val jsonBody = gson.toJson(AlertPayload(
             event = event,
             source = "siemprecerca_monitor",
-            appVersion = "2.6.0"
+            appVersion = "2.7.0"
         ))
 
         val requestBuilder = Request.Builder()
@@ -311,7 +311,7 @@ class AlertManager(private val context: Context) {
         val jsonBody = gson.toJson(AlertPayload(
             event = "health",
             source = "siemprecerca_monitor",
-            appVersion = "2.6.0"
+            appVersion = "2.7.0"
         ))
 
         val request = Request.Builder()
@@ -398,7 +398,7 @@ class AlertManager(private val context: Context) {
                 val jsonBody = gson.toJson(AlertPayload(
                     event = pending.event,
                     source = "siemprecerca_monitor",
-                    appVersion = "2.6.0"
+                    appVersion = "2.7.0"
                 ))
 
                 val request = Request.Builder()

@@ -36,7 +36,7 @@ data class MonitorState(
 data class AlertPayload(
     val event: String = "sos",
     val source: String = "siemprecerca_monitor",
-    val appVersion: String = "2.6.0"
+    val appVersion: String = "2.7.0"
 )
 
 data class PendingAlert(

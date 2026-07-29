@@ -1,5 +1,10 @@
 name: Build Android APK
 
+# Secrets necesarios:
+#   SSH_KEY  - clave privada SSH para conectarse al servidor de produccion
+#   SSH_HOST - IP o hostname del servidor (ej: 34.95.223.140)
+#   SSH_USER - usuario SSH (ej: jeremias)
+
 on:
   push:
     branches: [main]
@@ -38,6 +43,7 @@ jobs:
         run: |
           VERSION=$(grep 'versionName' app/build.gradle.kts | head -1 | grep -oP '"[^"]*"' | tr -d '"')
           cp app/build/outputs/apk/debug/app-debug.apk "siemprecerca-monitor-v${VERSION}.apk"
+          echo "APK_NAME=siemprecerca-monitor-v${VERSION}.apk" >> "$GITHUB_ENV"
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
@@ -51,3 +57,38 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: siemprecerca-monitor-*.apk
+
+      # --- Deploy al servidor via SCP ---
+      # Requiere secrets: SSH_KEY, SSH_HOST, SSH_USER
+      - name: Deploy APK al servidor
+        if: github.ref == 'refs/heads/main'
+        env:
+          SSH_KEY: ${{ secrets.SSH_KEY }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+        run: |
+          # Salir si no hay secrets configurados
+          if [ -z "$SSH_KEY" ] || [ -z "$SSH_HOST" ] || [ -z "$SSH_USER" ]; then
+            echo "::warning::Secrets SSH no configurados, saltando deploy"
+            exit 0
+          fi
+
+          # Configurar clave SSH
+          mkdir -p ~/.ssh
+          echo "$SSH_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H "$SSH_HOST" >> ~/.ssh/known_hosts 2>/dev/null
+
+          # Subir APK al servidor
+          scp -i ~/.ssh/deploy_key "$APK_NAME" "${SSH_USER}@${SSH_HOST}:/tmp/${APK_NAME}"
+
+          # Copiar al contenedor frontend para descarga publica
+          ssh -i ~/.ssh/deploy_key "${SSH_USER}@${SSH_HOST}" "\
+            cd /opt/siemprecerca && \
+            docker compose cp /tmp/${APK_NAME} frontend:/usr/share/nginx/html/downloads/${APK_NAME} && \
+            docker compose cp /tmp/${APK_NAME} frontend:/usr/share/nginx/html/downloads/siemprecerca-monitor-latest.apk && \
+            rm /tmp/${APK_NAME} && \
+            echo 'APK desplegado OK'"
+
+          # Limpiar
+          rm -f ~/.ssh/deploy_key
