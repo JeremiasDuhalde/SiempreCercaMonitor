@@ -7,13 +7,15 @@
     <color name="accent">#5BB5B0</color>
 
     <!-- Dark theme -->
-    <color name="background">#1A2626</color>
-    <color name="card_bg">#243434</color>
-    <color name="card_border">#2D4F4E</color>
-    <color name="input_bg">#1E3030</color>
-    <color name="surface_elevated">#2A3E3E</color>
+    <color name="background">#0D1717</color>
+    <color name="card_bg">#152222</color>
+    <color name="card_border">#1F3333</color>
+    <color name="input_bg">#1A2C2C</color>
+    <color name="surface_elevated">#1C3030</color>
+    <color name="hero_start">#1A3A3A</color>
+    <color name="hero_end">#0D1717</color>
 
-    <!-- Light theme (usado programaticamente) -->
+    <!-- Light theme -->
     <color name="background_light">#F0F5F4</color>
     <color name="card_bg_light">#FFFFFF</color>
     <color name="card_border_light">#D4E0DF</color>
@@ -21,8 +23,8 @@
 
     <!-- Texto dark theme -->
     <color name="text_primary">#E8F0EF</color>
-    <color name="text_secondary">#9DB5B4</color>
-    <color name="text_muted">#6B8A89</color>
+    <color name="text_secondary">#8FA8A7</color>
+    <color name="text_muted">#5A7574</color>
 
     <!-- Texto light theme -->
     <color name="text_primary_light">#1A2626</color>
@@ -30,15 +32,18 @@
     <color name="text_muted_light">#7A9695</color>
 
     <!-- Semaforo -->
-    <color name="green">#4CAF50</color>
-    <color name="red">#EF5350</color>
-    <color name="warning">#FFB74D</color>
+    <color name="green">#4ADE80</color>
+    <color name="green_dim">#1A3D2A</color>
+    <color name="red">#F87171</color>
+    <color name="red_dim">#3D1A1A</color>
+    <color name="warning">#FBBF24</color>
+    <color name="warning_dim">#3D351A</color>
 
     <!-- Botones -->
-    <color name="btn_primary">#406C6B</color>
-    <color name="btn_danger">#D32F2F</color>
-    <color name="btn_warning">#E65100</color>
-    <color name="btn_success">#2E7D32</color>
-    <color name="btn_muted">#344848</color>
+    <color name="btn_primary">#2D5554</color>
+    <color name="btn_danger">#7F1D1D</color>
+    <color name="btn_warning">#92400E</color>
+    <color name="btn_success">#14532D</color>
+    <color name="btn_muted">#1C2E2E</color>
     <color name="btn_muted_light">#D4E0DF</color>
 </resources>

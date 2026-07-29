@@ -4,24 +4,35 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background"
-    android:fillViewport="true">
+    android:fillViewport="true"
+    android:overScrollMode="never">
 
     <LinearLayout
         android:id="@+id/mainContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingHorizontal="20dp"
-        android:paddingTop="32dp"
-        android:paddingBottom="24dp">
+        android:paddingHorizontal="16dp"
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp">
 
-        <!-- Header -->
+        <!-- ==================== HEADER ==================== -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:layout_marginBottom="24dp">
+            android:layout_marginBottom="20dp"
+            android:paddingHorizontal="4dp">
+
+            <!-- Logo + Title -->
+            <ImageView
+                android:id="@+id/ivLogo"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:src="@mipmap/ic_launcher_foreground"
+                android:scaleType="centerCrop"
+                android:layout_marginEnd="10dp" />
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -34,35 +45,34 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="SiempreCerca"
-                    android:textSize="26sp"
-                    android:textColor="@color/primary_light"
-                    android:textStyle="bold"
-                    android:letterSpacing="0.02" />
+                    android:textSize="22sp"
+                    android:textColor="@color/text_primary"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/tvSubtitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Monitor BLE"
-                    android:textSize="13sp"
-                    android:textColor="@color/text_muted"
-                    android:layout_marginTop="2dp" />
+                    android:textSize="12sp"
+                    android:textColor="@color/text_muted" />
             </LinearLayout>
 
-            <!-- Theme toggle -->
+            <!-- Theme toggle pill -->
             <LinearLayout
+                android:id="@+id/themeToggleContainer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:background="@drawable/card_background"
-                android:padding="4dp">
+                android:padding="3dp">
 
                 <Button
                     android:id="@+id/btnThemeLight"
-                    android:layout_width="40dp"
-                    android:layout_height="36dp"
+                    android:layout_width="36dp"
+                    android:layout_height="32dp"
                     android:text="☀"
-                    android:textSize="16sp"
+                    android:textSize="14sp"
                     android:backgroundTint="@android:color/transparent"
                     android:textColor="@color/text_muted"
                     android:minWidth="0dp"
@@ -73,10 +83,10 @@
 
                 <Button
                     android:id="@+id/btnThemeDark"
-                    android:layout_width="40dp"
-                    android:layout_height="36dp"
+                    android:layout_width="36dp"
+                    android:layout_height="32dp"
                     android:text="☾"
-                    android:textSize="16sp"
+                    android:textSize="14sp"
                     android:backgroundTint="@color/primary"
                     android:textColor="@color/text_primary"
                     android:minWidth="0dp"
@@ -87,180 +97,318 @@
             </LinearLayout>
         </LinearLayout>
 
-        <!-- Status Card -->
+        <!-- ==================== HERO STATUS CARD ==================== -->
         <LinearLayout
-            android:id="@+id/cardStatus"
+            android:id="@+id/heroCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:background="@drawable/card_background"
+            android:orientation="vertical"
+            android:background="@drawable/hero_background"
             android:paddingHorizontal="20dp"
-            android:paddingVertical="18dp"
-            android:layout_marginBottom="12dp">
+            android:paddingTop="22dp"
+            android:paddingBottom="20dp"
+            android:layout_marginBottom="14dp">
 
-            <View
-                android:id="@+id/statusIndicator"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:background="@drawable/indicator_red"
-                android:layout_marginEnd="16dp" />
+            <!-- Status badge -->
+            <TextView
+                android:id="@+id/tvStatusBadge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="  DESCONECTADO  "
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:textColor="@color/red"
+                android:background="@drawable/status_badge_disconnected"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="4dp"
+                android:letterSpacing="0.08"
+                android:layout_marginBottom="14dp" />
 
+            <!-- Status text big -->
             <TextView
                 android:id="@+id/tvStatus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="INICIANDO..."
-                android:textSize="20sp"
+                android:text="Iniciando..."
+                android:textSize="28sp"
                 android:textColor="@color/text_primary"
                 android:textStyle="bold"
-                android:letterSpacing="0.03" />
+                android:layout_marginBottom="6dp" />
+
+            <!-- Patient + Device subtitle -->
+            <TextView
+                android:id="@+id/tvHeroSubtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Paciente: -- | Reloj: --"
+                android:textSize="13sp"
+                android:textColor="@color/text_muted"
+                android:layout_marginBottom="18dp" />
+
+            <!-- Metrics row inside hero -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <!-- Metric: Bluetooth -->
+                <LinearLayout
+                    android:id="@+id/metricBluetooth"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@drawable/metric_card"
+                    android:padding="12dp"
+                    android:layout_marginEnd="6dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Bluetooth"
+                        android:textSize="11sp"
+                        android:textColor="@color/text_muted"
+                        android:layout_marginBottom="4dp" />
+
+                    <TextView
+                        android:id="@+id/tvBluetooth"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="--"
+                        android:textSize="16sp"
+                        android:textColor="@color/text_primary"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <!-- Metric: Ultimo click -->
+                <LinearLayout
+                    android:id="@+id/metricLastClick"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@drawable/metric_card"
+                    android:padding="12dp"
+                    android:layout_marginStart="6dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Ultimo click"
+                        android:textSize="11sp"
+                        android:textColor="@color/text_muted"
+                        android:layout_marginBottom="4dp" />
+
+                    <TextView
+                        android:id="@+id/tvLastClick"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="--"
+                        android:textSize="16sp"
+                        android:textColor="@color/text_primary"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </LinearLayout>
         </LinearLayout>
 
-        <!-- Info Card -->
+        <!-- ==================== BATTERY CARDS ROW ==================== -->
         <LinearLayout
-            android:id="@+id/cardInfo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="@drawable/card_background"
-            android:paddingHorizontal="20dp"
-            android:paddingVertical="16dp"
-            android:layout_marginBottom="12dp">
+            android:orientation="horizontal"
+            android:layout_marginBottom="14dp">
 
-            <TextView
-                android:id="@+id/tvInfoTitle"
-                android:layout_width="wrap_content"
+            <!-- FLIC Battery -->
+            <LinearLayout
+                android:id="@+id/cardFlicBattery"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:text="Dispositivo"
-                android:textSize="12sp"
-                android:textColor="@color/primary_light"
-                android:textStyle="bold"
-                android:textAllCaps="true"
-                android:letterSpacing="0.1"
-                android:layout_marginBottom="12dp" />
+                android:orientation="vertical"
+                android:background="@drawable/card_background"
+                android:padding="16dp"
+                android:layout_marginEnd="6dp">
 
-            <TextView
-                android:id="@+id/tvDeviceName"
-                android:layout_width="wrap_content"
+                <TextView
+                    android:id="@+id/tvFlicBatteryLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Bateria FLIC"
+                    android:textSize="11sp"
+                    android:textColor="@color/text_muted"
+                    android:layout_marginBottom="6dp" />
+
+                <TextView
+                    android:id="@+id/tvFlicBattery"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="--"
+                    android:textSize="22sp"
+                    android:textColor="@color/text_primary"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvFlicBatteryStatus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:textSize="12sp"
+                    android:textColor="@color/green"
+                    android:layout_marginTop="2dp" />
+            </LinearLayout>
+
+            <!-- Phone Battery -->
+            <LinearLayout
+                android:id="@+id/cardPhoneBattery"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:text="Reloj: --"
-                android:textSize="15sp"
-                android:textColor="@color/text_secondary"
-                android:layout_marginBottom="6dp" />
+                android:orientation="vertical"
+                android:background="@drawable/card_background"
+                android:padding="16dp"
+                android:layout_marginStart="6dp">
 
-            <TextView
-                android:id="@+id/tvClientName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Paciente: --"
-                android:textSize="15sp"
-                android:textColor="@color/text_secondary"
-                android:layout_marginBottom="6dp" />
+                <TextView
+                    android:id="@+id/tvPhoneBatteryLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Bateria celular"
+                    android:textSize="11sp"
+                    android:textColor="@color/text_muted"
+                    android:layout_marginBottom="6dp" />
 
-            <TextView
-                android:id="@+id/tvBluetooth"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Bluetooth: --"
-                android:textSize="15sp"
-                android:textColor="@color/text_secondary"
-                android:layout_marginBottom="6dp" />
+                <TextView
+                    android:id="@+id/tvPhoneBattery"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="--"
+                    android:textSize="22sp"
+                    android:textColor="@color/text_primary"
+                    android:textStyle="bold" />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/card_border"
-                android:layout_marginVertical="8dp" />
-
-            <TextView
-                android:id="@+id/tvFlicBattery"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Bateria FLIC: --"
-                android:textSize="15sp"
-                android:textColor="@color/text_secondary"
-                android:layout_marginBottom="6dp" />
-
-            <TextView
-                android:id="@+id/tvPhoneBattery"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Bateria celular: --"
-                android:textSize="15sp"
-                android:textColor="@color/text_secondary" />
+                <TextView
+                    android:id="@+id/tvPhoneBatteryStatus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:textSize="12sp"
+                    android:textColor="@color/green"
+                    android:layout_marginTop="2dp" />
+            </LinearLayout>
         </LinearLayout>
 
-        <!-- Alerts Card -->
+        <!-- ==================== ALERTS CARD ==================== -->
         <LinearLayout
             android:id="@+id/cardAlerts"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:background="@drawable/card_background"
-            android:paddingHorizontal="20dp"
+            android:paddingHorizontal="18dp"
             android:paddingVertical="16dp"
-            android:layout_marginBottom="12dp">
+            android:layout_marginBottom="14dp">
 
-            <TextView
-                android:id="@+id/tvAlertsTitle"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Alertas"
-                android:textSize="12sp"
-                android:textColor="@color/primary_light"
-                android:textStyle="bold"
-                android:textAllCaps="true"
-                android:letterSpacing="0.1"
-                android:layout_marginBottom="12dp" />
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="14dp">
 
-            <TextView
-                android:id="@+id/tvLastAlert"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Ultima alerta: Ninguna"
-                android:textSize="15sp"
-                android:textColor="@color/text_secondary"
-                android:layout_marginBottom="6dp" />
+                <TextView
+                    android:id="@+id/tvAlertsIcon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="⚡"
+                    android:textSize="16sp"
+                    android:layout_marginEnd="8dp" />
 
-            <TextView
-                android:id="@+id/tvLastClick"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Ultimo click: --"
-                android:textSize="15sp"
-                android:textColor="@color/text_secondary"
-                android:layout_marginBottom="6dp" />
+                <TextView
+                    android:id="@+id/tvAlertsTitle"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="ALERTAS"
+                    android:textSize="12sp"
+                    android:textColor="@color/primary_light"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.1" />
 
-            <TextView
-                android:id="@+id/tvAlertCount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Total alertas: 0"
-                android:textSize="15sp"
-                android:textColor="@color/text_secondary"
-                android:layout_marginBottom="6dp" />
+                <TextView
+                    android:id="@+id/tvAlertCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textSize="20sp"
+                    android:textColor="@color/text_primary"
+                    android:textStyle="bold" />
+            </LinearLayout>
 
-            <TextView
-                android:id="@+id/tvPendingAlerts"
-                android:layout_width="wrap_content"
+            <!-- Alert metrics row -->
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Alertas pendientes: 0"
-                android:textSize="15sp"
-                android:textColor="@color/warning"
-                android:visibility="gone" />
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginEnd="8dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Ultima alerta"
+                        android:textSize="11sp"
+                        android:textColor="@color/text_muted"
+                        android:layout_marginBottom="2dp" />
+
+                    <TextView
+                        android:id="@+id/tvLastAlert"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Ninguna"
+                        android:textSize="14sp"
+                        android:textColor="@color/text_secondary" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Pendientes"
+                        android:textSize="11sp"
+                        android:textColor="@color/text_muted"
+                        android:layout_marginBottom="2dp" />
+
+                    <TextView
+                        android:id="@+id/tvPendingAlerts"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textSize="14sp"
+                        android:textColor="@color/text_secondary" />
+                </LinearLayout>
+            </LinearLayout>
         </LinearLayout>
 
-        <!-- Health Check Card -->
+        <!-- ==================== HEALTH CHECK CARD ==================== -->
         <LinearLayout
             android:id="@+id/cardHealth"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:background="@drawable/card_background"
-            android:paddingHorizontal="20dp"
+            android:paddingHorizontal="18dp"
             android:paddingVertical="16dp"
-            android:layout_marginBottom="12dp">
+            android:layout_marginBottom="14dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -270,15 +418,21 @@
                 android:layout_marginBottom="8dp">
 
                 <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="💚"
+                    android:textSize="14sp"
+                    android:layout_marginEnd="8dp" />
+
+                <TextView
                     android:id="@+id/tvHealthTitle"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Health Check"
+                    android:text="HEALTH CHECK"
                     android:textSize="12sp"
                     android:textColor="@color/green"
                     android:textStyle="bold"
-                    android:textAllCaps="true"
                     android:letterSpacing="0.1" />
 
                 <Switch
@@ -293,95 +447,107 @@
                 android:id="@+id/tvHealthDesc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Ping cada 1h al servidor para detectar inactividad."
-                android:textSize="13sp"
+                android:text="Ping cada 1h al servidor"
+                android:textSize="12sp"
                 android:textColor="@color/text_muted"
-                android:layout_marginBottom="6dp" />
+                android:layout_marginBottom="4dp" />
 
             <TextView
                 android:id="@+id/tvHealthStatus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Health check activado"
+                android:text="Activado"
                 android:textSize="14sp"
                 android:textColor="@color/text_secondary" />
         </LinearLayout>
 
-        <!-- Contacts Card -->
+        <!-- ==================== CONTACTS CARD ==================== -->
         <LinearLayout
             android:id="@+id/cardContacts"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:background="@drawable/card_background"
-            android:paddingHorizontal="20dp"
+            android:paddingHorizontal="18dp"
             android:paddingVertical="16dp"
             android:layout_marginBottom="20dp">
 
-            <TextView
-                android:id="@+id/tvContactsTitle"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Contactos SMS"
-                android:textSize="12sp"
-                android:textColor="@color/primary_light"
-                android:textStyle="bold"
-                android:textAllCaps="true"
-                android:letterSpacing="0.1"
-                android:layout_marginBottom="10dp" />
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="📱"
+                    android:textSize="14sp"
+                    android:layout_marginEnd="8dp" />
+
+                <TextView
+                    android:id="@+id/tvContactsTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="CONTACTOS SMS"
+                    android:textSize="12sp"
+                    android:textColor="@color/primary_light"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.1" />
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/tvContacts"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Contactos SMS: --"
-                android:textSize="14sp"
-                android:textColor="@color/text_secondary" />
+                android:text="--"
+                android:textSize="13sp"
+                android:textColor="@color/text_secondary"
+                android:lineSpacingExtra="3dp" />
         </LinearLayout>
 
-        <!-- Buttons Grid 2x2 -->
+        <!-- ==================== BUTTONS GRID ==================== -->
         <LinearLayout
             android:id="@+id/gridButtons"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginBottom="12dp">
+            android:layout_marginBottom="8dp">
 
-            <!-- Row 1: Reconectar + Test SOS -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginBottom="10dp">
+                android:layout_marginBottom="8dp">
 
                 <Button
                     android:id="@+id/btnReconnect"
                     android:layout_width="0dp"
                     android:layout_weight="1"
-                    android:layout_height="56dp"
+                    android:layout_height="52dp"
                     android:text="Reconectar"
-                    android:textSize="14sp"
+                    android:textSize="13sp"
                     android:textStyle="bold"
                     android:background="@drawable/btn_primary"
-                    android:textColor="#FFFFFF"
-                    android:layout_marginEnd="5dp"
+                    android:textColor="#CCEEEE"
+                    android:layout_marginEnd="4dp"
                     android:stateListAnimator="@null" />
 
                 <Button
                     android:id="@+id/btnTestSos"
                     android:layout_width="0dp"
                     android:layout_weight="1"
-                    android:layout_height="56dp"
+                    android:layout_height="52dp"
                     android:text="Test SOS"
-                    android:textSize="14sp"
+                    android:textSize="13sp"
                     android:textStyle="bold"
                     android:background="@drawable/btn_warning"
-                    android:textColor="#FFFFFF"
-                    android:layout_marginStart="5dp"
+                    android:textColor="#FFEEDD"
+                    android:layout_marginStart="4dp"
                     android:stateListAnimator="@null" />
             </LinearLayout>
 
-            <!-- Row 2: Actualizar + Reconfigurar -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -391,25 +557,25 @@
                     android:id="@+id/btnUpdate"
                     android:layout_width="0dp"
                     android:layout_weight="1"
-                    android:layout_height="56dp"
+                    android:layout_height="52dp"
                     android:text="Actualizar"
-                    android:textSize="14sp"
+                    android:textSize="13sp"
                     android:textStyle="bold"
                     android:background="@drawable/btn_success"
-                    android:textColor="#FFFFFF"
-                    android:layout_marginEnd="5dp"
+                    android:textColor="#CCEECC"
+                    android:layout_marginEnd="4dp"
                     android:stateListAnimator="@null" />
 
                 <Button
                     android:id="@+id/btnReset"
                     android:layout_width="0dp"
                     android:layout_weight="1"
-                    android:layout_height="56dp"
+                    android:layout_height="52dp"
                     android:text="Reconfigurar"
-                    android:textSize="14sp"
+                    android:textSize="13sp"
                     android:background="@drawable/btn_muted"
                     android:textColor="@color/text_muted"
-                    android:layout_marginStart="5dp"
+                    android:layout_marginStart="4dp"
                     android:stateListAnimator="@null" />
             </LinearLayout>
         </LinearLayout>
@@ -419,11 +585,11 @@
             android:id="@+id/tvVersion"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="v3.0.0"
-            android:textSize="12sp"
+            android:text="v3.1.0"
+            android:textSize="11sp"
             android:textColor="@color/text_muted"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="16dp" />
+            android:layout_marginTop="12dp" />
 
     </LinearLayout>
 </ScrollView>

@@ -4,16 +4,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background"
-    android:fillViewport="true">
+    android:fillViewport="true"
+    android:overScrollMode="never">
 
     <LinearLayout
         android:id="@+id/setupContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingHorizontal="20dp"
-        android:paddingTop="40dp"
-        android:paddingBottom="32dp">
+        android:paddingHorizontal="16dp"
+        android:paddingTop="28dp"
+        android:paddingBottom="28dp">
 
         <!-- Header -->
         <LinearLayout
@@ -21,7 +22,16 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:layout_marginBottom="8dp">
+            android:layout_marginBottom="8dp"
+            android:paddingHorizontal="4dp">
+
+            <ImageView
+                android:id="@+id/ivSetupLogo"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:src="@mipmap/ic_launcher_foreground"
+                android:scaleType="centerCrop"
+                android:layout_marginEnd="10dp" />
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -33,36 +43,34 @@
                     android:id="@+id/tvSetupTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Siempre Cerca"
-                    android:textSize="26sp"
-                    android:textColor="@color/primary_light"
-                    android:textStyle="bold"
-                    android:letterSpacing="0.02" />
+                    android:text="SiempreCerca"
+                    android:textSize="22sp"
+                    android:textColor="@color/text_primary"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/tvSetupSubtitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Configurar monitor"
-                    android:textSize="14sp"
-                    android:textColor="@color/text_muted"
-                    android:layout_marginTop="2dp" />
+                    android:textSize="12sp"
+                    android:textColor="@color/text_muted" />
             </LinearLayout>
 
-            <!-- Theme toggle -->
+            <!-- Theme toggle pill -->
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:background="@drawable/card_background"
-                android:padding="4dp">
+                android:padding="3dp">
 
                 <Button
                     android:id="@+id/btnSetupThemeLight"
-                    android:layout_width="40dp"
-                    android:layout_height="36dp"
+                    android:layout_width="36dp"
+                    android:layout_height="32dp"
                     android:text="☀"
-                    android:textSize="16sp"
+                    android:textSize="14sp"
                     android:backgroundTint="@android:color/transparent"
                     android:textColor="@color/text_muted"
                     android:minWidth="0dp"
@@ -73,10 +81,10 @@
 
                 <Button
                     android:id="@+id/btnSetupThemeDark"
-                    android:layout_width="40dp"
-                    android:layout_height="36dp"
+                    android:layout_width="36dp"
+                    android:layout_height="32dp"
                     android:text="☾"
-                    android:textSize="16sp"
+                    android:textSize="14sp"
                     android:backgroundTint="@color/primary"
                     android:textColor="@color/text_primary"
                     android:minWidth="0dp"
@@ -95,7 +103,8 @@
             android:text="Conectando..."
             android:textSize="13sp"
             android:textColor="@color/warning"
-            android:layout_marginBottom="32dp" />
+            android:paddingHorizontal="4dp"
+            android:layout_marginBottom="28dp" />
 
         <!-- PASO 1 Card -->
         <LinearLayout
@@ -104,21 +113,38 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:background="@drawable/card_background"
-            android:paddingHorizontal="20dp"
+            android:paddingHorizontal="18dp"
             android:paddingVertical="16dp"
-            android:layout_marginBottom="16dp">
+            android:layout_marginBottom="14dp">
 
-            <TextView
-                android:id="@+id/tvStep1Label"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="PASO 1 — PACIENTE"
-                android:textSize="12sp"
-                android:textColor="@color/primary_light"
-                android:textStyle="bold"
-                android:textAllCaps="true"
-                android:letterSpacing="0.1"
-                android:layout_marginBottom="14dp" />
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="14dp">
+
+                <TextView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:text="1"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/primary_light"
+                    android:gravity="center"
+                    android:background="@drawable/metric_card"
+                    android:layout_marginEnd="10dp" />
+
+                <TextView
+                    android:id="@+id/tvStep1Label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="PACIENTE"
+                    android:textSize="12sp"
+                    android:textColor="@color/primary_light"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.1" />
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -129,7 +155,7 @@
                 <EditText
                     android:id="@+id/etClientId"
                     android:layout_width="0dp"
-                    android:layout_height="52dp"
+                    android:layout_height="50dp"
                     android:layout_weight="1"
                     android:hint="Ej: 10"
                     android:inputType="number"
@@ -139,17 +165,17 @@
                     android:gravity="center"
                     android:background="@drawable/input_background"
                     android:paddingHorizontal="16dp"
-                    android:layout_marginEnd="10dp" />
+                    android:layout_marginEnd="8dp" />
 
                 <Button
                     android:id="@+id/btnBuscarPaciente"
                     android:layout_width="wrap_content"
-                    android:layout_height="52dp"
+                    android:layout_height="50dp"
                     android:text="Buscar"
                     android:textSize="14sp"
                     android:textStyle="bold"
                     android:background="@drawable/btn_primary"
-                    android:textColor="#FFFFFF"
+                    android:textColor="#CCEEEE"
                     android:paddingHorizontal="20dp"
                     android:stateListAnimator="@null" />
             </LinearLayout>
@@ -158,7 +184,7 @@
                 android:id="@+id/tvClientName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="15sp"
+                android:textSize="14sp"
                 android:textColor="@color/green"
                 android:visibility="gone"
                 android:layout_marginTop="12dp" />
@@ -171,27 +197,44 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:background="@drawable/card_background"
-            android:paddingHorizontal="20dp"
+            android:paddingHorizontal="18dp"
             android:paddingVertical="16dp"
             android:layout_marginBottom="24dp">
 
-            <TextView
-                android:id="@+id/tvStep2Label"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="PASO 2 — VINCULAR FLIC"
-                android:textSize="12sp"
-                android:textColor="@color/primary_light"
-                android:textStyle="bold"
-                android:textAllCaps="true"
-                android:letterSpacing="0.1"
-                android:layout_marginBottom="10dp" />
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="10dp">
+
+                <TextView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:text="2"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/primary_light"
+                    android:gravity="center"
+                    android:background="@drawable/metric_card"
+                    android:layout_marginEnd="10dp" />
+
+                <TextView
+                    android:id="@+id/tvStep2Label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="VINCULAR FLIC"
+                    android:textSize="12sp"
+                    android:textColor="@color/primary_light"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.1" />
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/tvScanDesc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Toca el boton de abajo y luego presiona tu boton FLIC. Acepta la vinculacion cuando aparezca el dialogo."
+                android:text="Toca el boton y luego presiona tu FLIC. Acepta la vinculacion cuando aparezca."
                 android:textSize="13sp"
                 android:textColor="@color/text_muted"
                 android:layout_marginBottom="14dp" />
@@ -199,9 +242,9 @@
             <Button
                 android:id="@+id/btnScan"
                 android:layout_width="match_parent"
-                android:layout_height="52dp"
+                android:layout_height="50dp"
                 android:text="Buscar y vincular FLIC"
-                android:textSize="15sp"
+                android:textSize="14sp"
                 android:textStyle="bold"
                 android:background="@drawable/btn_muted"
                 android:textColor="@color/text_primary"
@@ -211,7 +254,7 @@
             <ProgressBar
                 android:id="@+id/progressBar"
                 android:layout_width="match_parent"
-                android:layout_height="4dp"
+                android:layout_height="3dp"
                 style="@style/Widget.AppCompat.ProgressBar.Horizontal"
                 android:indeterminate="true"
                 android:indeterminateTint="@color/primary_light"
@@ -223,15 +266,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text=""
-                android:textSize="14sp"
+                android:textSize="13sp"
                 android:textColor="@color/text_muted"
-                android:layout_marginBottom="6dp" />
+                android:layout_marginBottom="4dp" />
 
             <TextView
                 android:id="@+id/tvSelectedDevice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="15sp"
+                android:textSize="14sp"
                 android:textColor="@color/green"
                 android:visibility="gone" />
         </LinearLayout>
@@ -240,9 +283,9 @@
         <Button
             android:id="@+id/btnSave"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="56dp"
             android:text="Activar monitoreo"
-            android:textSize="17sp"
+            android:textSize="16sp"
             android:textStyle="bold"
             android:background="@drawable/btn_accent"
             android:textColor="#FFFFFF"
