@@ -3,6 +3,7 @@ package com.siemprecerca.monitor
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.res.ColorStateList
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -46,6 +47,7 @@ class SetupActivity : AppCompatActivity() {
                 }
             } catch (_: Exception) {}
 
+            applyTheme()
             initViews()
             val needed = getPerms().filter { ContextCompat.checkSelfPermission(this, it) != PackageManager.PERMISSION_GRANTED }
             if (needed.isNotEmpty()) ActivityCompat.requestPermissions(this, needed.toTypedArray(), 100)
@@ -58,6 +60,69 @@ class SetupActivity : AppCompatActivity() {
     private fun showErr(msg: String) {
         try { AlertDialog.Builder(this).setTitle("Error").setMessage(msg).setPositiveButton("OK", null).show() }
         catch (_: Exception) { Toast.makeText(this, msg, Toast.LENGTH_LONG).show() }
+    }
+
+    private fun applyTheme() {
+        val isLight = prefs?.themeMode == "light"
+        val scroll = findViewById<ScrollView>(R.id.setupScroll)
+        val bgColor = ContextCompat.getColor(this, if (isLight) R.color.background_light else R.color.background)
+
+        scroll.setBackgroundColor(bgColor)
+        window.statusBarColor = bgColor
+        window.navigationBarColor = bgColor
+        if (isLight && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+        } else {
+            window.decorView.systemUiVisibility = 0
+        }
+
+        val cardDrawable = if (isLight) R.drawable.card_background_light else R.drawable.card_background
+        val inputDrawable = if (isLight) R.drawable.input_background_light else R.drawable.input_background
+        val textPrimary = ContextCompat.getColor(this, if (isLight) R.color.text_primary_light else R.color.text_primary)
+        val textMuted = ContextCompat.getColor(this, if (isLight) R.color.text_muted_light else R.color.text_muted)
+        val primaryLight = ContextCompat.getColor(this, R.color.primary_light)
+
+        // Title
+        findViewById<TextView>(R.id.tvSetupTitle)?.setTextColor(primaryLight)
+        findViewById<TextView>(R.id.tvSetupSubtitle)?.setTextColor(textMuted)
+
+        // Cards
+        val cardIds = listOf(R.id.cardStep1, R.id.cardStep2)
+        for (id in cardIds) {
+            findViewById<View>(id)?.setBackgroundResource(cardDrawable)
+        }
+
+        // Step labels
+        findViewById<TextView>(R.id.tvStep1Label)?.setTextColor(primaryLight)
+        findViewById<TextView>(R.id.tvStep2Label)?.setTextColor(primaryLight)
+
+        // Input
+        findViewById<EditText>(R.id.etClientId)?.apply {
+            setBackgroundResource(inputDrawable)
+            setTextColor(textPrimary)
+            setHintTextColor(textMuted)
+        }
+
+        // Descriptions
+        findViewById<TextView>(R.id.tvScanDesc)?.setTextColor(textMuted)
+
+        // Scan button text for light
+        findViewById<Button>(R.id.btnScan)?.setTextColor(textPrimary)
+
+        // Theme toggle
+        val btnLight = findViewById<Button>(R.id.btnSetupThemeLight)
+        val btnDark = findViewById<Button>(R.id.btnSetupThemeDark)
+        if (isLight) {
+            btnLight?.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.primary))
+            btnLight?.setTextColor(0xFFFFFFFF.toInt())
+            btnDark?.backgroundTintList = ColorStateList.valueOf(0x00000000)
+            btnDark?.setTextColor(textMuted)
+        } else {
+            btnDark?.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.primary))
+            btnDark?.setTextColor(0xFFFFFFFF.toInt())
+            btnLight?.backgroundTintList = ColorStateList.valueOf(0x00000000)
+            btnLight?.setTextColor(textMuted)
+        }
     }
 
     private fun initViews() {
@@ -73,7 +138,17 @@ class SetupActivity : AppCompatActivity() {
             tvSelectedDevice?.text = "FLIC: $serial (ya vinculado)"
             tvSelectedDevice?.visibility = View.VISIBLE
             tvScanStatus?.text = "Boton ya vinculado"
-            tvScanStatus?.setTextColor(0xFF4CAF50.toInt())
+            tvScanStatus?.setTextColor(ContextCompat.getColor(this, R.color.green))
+        }
+
+        // Theme toggles
+        findViewById<Button>(R.id.btnSetupThemeLight)?.setOnClickListener {
+            prefs?.themeMode = "light"
+            recreate()
+        }
+        findViewById<Button>(R.id.btnSetupThemeDark)?.setOnClickListener {
+            prefs?.themeMode = "dark"
+            recreate()
         }
 
         // Buscar paciente
@@ -81,17 +156,17 @@ class SetupActivity : AppCompatActivity() {
             val id = etClientId.text.toString().toIntOrNull()
             if (id == null || id <= 0) { etClientId.error = "Invalido"; return@setOnClickListener }
             tvClientName.text = "Buscando..."
-            tvClientName.setTextColor(0xFFFFAA00.toInt())
+            tvClientName.setTextColor(ContextCompat.getColor(this, R.color.warning))
             tvClientName.visibility = View.VISIBLE
             authManager?.fetchClient(id) { client ->
                 runOnUiThread {
                     if (client != null) {
                         clientName = client.displayName()
                         tvClientName.text = "Paciente: $clientName"
-                        tvClientName.setTextColor(0xFF4CAF50.toInt())
+                        tvClientName.setTextColor(ContextCompat.getColor(this, R.color.green))
                     } else {
                         tvClientName.text = "No encontrado"
-                        tvClientName.setTextColor(0xFFF44336.toInt())
+                        tvClientName.setTextColor(ContextCompat.getColor(this, R.color.red))
                         clientName = null
                     }
                 }
@@ -141,7 +216,7 @@ class SetupActivity : AppCompatActivity() {
         btnScan?.text = "Buscando..."
         btnScan?.isEnabled = false
         tvScanStatus?.text = "Presiona tu boton FLIC ahora!"
-        tvScanStatus?.setTextColor(0xFFFFAA00.toInt())
+        tvScanStatus?.setTextColor(ContextCompat.getColor(this, R.color.warning))
         progressBar?.visibility = View.VISIBLE
 
         try {
@@ -182,14 +257,14 @@ class SetupActivity : AppCompatActivity() {
                         } else {
                             val err = try { Flic2Manager.errorCodeToString(result) } catch (_: Exception) { "Codigo $result" }
                             scanDone("Error: $err")
-                            tvScanStatus?.setTextColor(0xFFF44336.toInt())
+                            tvScanStatus?.setTextColor(ContextCompat.getColor(this@SetupActivity, R.color.red))
                         }
                     }
                 }
             })
         } catch (e: Exception) {
             scanDone("Error: ${e.message}")
-            tvScanStatus?.setTextColor(0xFFF44336.toInt())
+            tvScanStatus?.setTextColor(ContextCompat.getColor(this, R.color.red))
         }
     }
 
@@ -198,17 +273,17 @@ class SetupActivity : AppCompatActivity() {
         btnScan?.text = "Buscar y vincular FLIC"
         btnScan?.isEnabled = true
         tvScanStatus?.text = msg
-        tvScanStatus?.setTextColor(0xFF4CAF50.toInt())
+        tvScanStatus?.setTextColor(ContextCompat.getColor(this, R.color.green))
     }
 
     private fun connectToServer() {
         val tv = findViewById<TextView>(R.id.tvServerStatus)
         tv.text = "Conectando..."
-        tv.setTextColor(0xFFFFAA00.toInt())
+        tv.setTextColor(ContextCompat.getColor(this, R.color.warning))
         authManager?.login { ok ->
             runOnUiThread {
-                if (ok) { tv.text = "Servidor conectado"; tv.setTextColor(0xFF4CAF50.toInt()) }
-                else { tv.text = "Error. Toca para reintentar."; tv.setTextColor(0xFFF44336.toInt()); tv.setOnClickListener { connectToServer() } }
+                if (ok) { tv.text = "Servidor conectado"; tv.setTextColor(ContextCompat.getColor(this, R.color.green)) }
+                else { tv.text = "Error. Toca para reintentar."; tv.setTextColor(ContextCompat.getColor(this, R.color.red)); tv.setOnClickListener { connectToServer() } }
             }
         }
     }

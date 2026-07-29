@@ -1,13 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="primary">#E94560</color>
-    <color name="primary_dark">#C73A52</color>
-    <color name="background">#1A1A2E</color>
-    <color name="card_bg">#16213E</color>
-    <color name="text_primary">#FFFFFF</color>
-    <color name="text_secondary">#CCCCCC</color>
-    <color name="text_muted">#888888</color>
+    <!-- Paleta principal verde-azulado -->
+    <color name="primary">#406C6B</color>
+    <color name="primary_dark">#2D4F4E</color>
+    <color name="primary_light">#5BB5B0</color>
+    <color name="accent">#5BB5B0</color>
+
+    <!-- Dark theme -->
+    <color name="background">#1A2626</color>
+    <color name="card_bg">#243434</color>
+    <color name="card_border">#2D4F4E</color>
+    <color name="input_bg">#1E3030</color>
+    <color name="surface_elevated">#2A3E3E</color>
+
+    <!-- Light theme (usado programaticamente) -->
+    <color name="background_light">#F0F5F4</color>
+    <color name="card_bg_light">#FFFFFF</color>
+    <color name="card_border_light">#D4E0DF</color>
+    <color name="input_bg_light">#E8EFEE</color>
+
+    <!-- Texto dark theme -->
+    <color name="text_primary">#E8F0EF</color>
+    <color name="text_secondary">#9DB5B4</color>
+    <color name="text_muted">#6B8A89</color>
+
+    <!-- Texto light theme -->
+    <color name="text_primary_light">#1A2626</color>
+    <color name="text_secondary_light">#4A6565</color>
+    <color name="text_muted_light">#7A9695</color>
+
+    <!-- Semaforo -->
     <color name="green">#4CAF50</color>
-    <color name="red">#F44336</color>
-    <color name="input_bg">#0F3460</color>
+    <color name="red">#EF5350</color>
+    <color name="warning">#FFB74D</color>
+
+    <!-- Botones -->
+    <color name="btn_primary">#406C6B</color>
+    <color name="btn_danger">#D32F2F</color>
+    <color name="btn_warning">#E65100</color>
+    <color name="btn_success">#2E7D32</color>
+    <color name="btn_muted">#344848</color>
+    <color name="btn_muted_light">#D4E0DF</color>
 </resources>

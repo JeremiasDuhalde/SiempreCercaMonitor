@@ -1,6 +1,8 @@
 package com.siemprecerca.monitor
 
 import android.content.*
+import android.content.res.ColorStateList
+import android.graphics.drawable.GradientDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -8,12 +10,14 @@ import android.os.Environment
 import android.os.IBinder
 import android.view.View
 import android.widget.Button
+import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.Switch
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import com.siemprecerca.monitor.data.AlertManager
 import com.siemprecerca.monitor.data.Config
@@ -57,7 +61,6 @@ class MainActivity : AppCompatActivity() {
             FlicBleService.start(this)
         }
 
-        // Feature 6: Boton Test SOS
         findViewById<Button>(R.id.btnTestSos).setOnClickListener {
             try {
                 AlertManager(this).sendTestAlert()
@@ -67,7 +70,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        // Boton actualizar
         findViewById<Button>(R.id.btnUpdate).setOnClickListener { checkForUpdate() }
 
         findViewById<Button>(R.id.btnReset).setOnClickListener {
@@ -120,7 +122,6 @@ class MainActivity : AppCompatActivity() {
             findViewById<View>(R.id.statusIndicator)?.setBackgroundResource(if (connected) R.drawable.indicator_green else R.drawable.indicator_red)
             findViewById<TextView>(R.id.tvBluetooth)?.text = "Bluetooth: Activo"
 
-            // Feature 2: Bateria FLIC
             try {
                 val flicVoltage = prefs.flicBatteryVoltage
                 val tvFlicBattery = findViewById<TextView>(R.id.tvFlicBattery)
@@ -128,33 +129,32 @@ class MainActivity : AppCompatActivity() {
                     val voltageText = String.format(Locale.US, "%.2f", flicVoltage)
                     if (flicVoltage < 2.5f) {
                         tvFlicBattery?.text = "Bateria FLIC: ${voltageText}v - BAJA"
-                        tvFlicBattery?.setTextColor(0xFFFF4444.toInt())
+                        tvFlicBattery?.setTextColor(ContextCompat.getColor(this, R.color.red))
                     } else {
                         tvFlicBattery?.text = "Bateria FLIC: ${voltageText}v - OK"
-                        tvFlicBattery?.setTextColor(0xFF4CAF50.toInt())
+                        tvFlicBattery?.setTextColor(ContextCompat.getColor(this, R.color.green))
                     }
                 } else {
                     tvFlicBattery?.text = "Bateria FLIC: --"
-                    tvFlicBattery?.setTextColor(0xFFCCCCCC.toInt())
+                    tvFlicBattery?.setTextColor(themedColor(R.color.text_secondary, R.color.text_secondary_light))
                 }
             } catch (_: Exception) {}
 
-            // Feature 3: Bateria celular
             try {
                 val phoneBattery = prefs.phoneBatteryLevel
                 val tvPhoneBattery = findViewById<TextView>(R.id.tvPhoneBattery)
                 if (phoneBattery >= 0) {
                     tvPhoneBattery?.text = "Bateria celular: $phoneBattery%"
                     if (phoneBattery < 15) {
-                        tvPhoneBattery?.setTextColor(0xFFFF4444.toInt())
+                        tvPhoneBattery?.setTextColor(ContextCompat.getColor(this, R.color.red))
                     } else if (phoneBattery < 30) {
-                        tvPhoneBattery?.setTextColor(0xFFFF9800.toInt())
+                        tvPhoneBattery?.setTextColor(ContextCompat.getColor(this, R.color.warning))
                     } else {
-                        tvPhoneBattery?.setTextColor(0xFF4CAF50.toInt())
+                        tvPhoneBattery?.setTextColor(ContextCompat.getColor(this, R.color.green))
                     }
                 } else {
                     tvPhoneBattery?.text = "Bateria celular: --"
-                    tvPhoneBattery?.setTextColor(0xFFCCCCCC.toInt())
+                    tvPhoneBattery?.setTextColor(themedColor(R.color.text_secondary, R.color.text_secondary_light))
                 }
             } catch (_: Exception) {}
 
@@ -164,7 +164,6 @@ class MainActivity : AppCompatActivity() {
             val la = prefs.lastAlertTime
             findViewById<TextView>(R.id.tvLastAlert)?.text = "Ultima alerta: ${if (la > 0) df.format(Date(la)) else "Ninguna"}"
 
-            // Feature 4: Ultimo click
             try {
                 val lc = prefs.lastClickTime
                 findViewById<TextView>(R.id.tvLastClick)?.text = "Ultimo click: ${if (lc > 0) df.format(Date(lc)) else "--"}"
@@ -172,20 +171,18 @@ class MainActivity : AppCompatActivity() {
 
             findViewById<TextView>(R.id.tvAlertCount)?.text = "Total alertas: ${prefs.alertCount}"
 
-            // Feature 7: Alertas pendientes
             try {
                 val pendingCount = AlertManager(this).getPendingCount()
                 val tvPending = findViewById<TextView>(R.id.tvPendingAlerts)
                 if (pendingCount > 0) {
                     tvPending?.text = "Alertas pendientes: $pendingCount"
-                    tvPending?.setTextColor(0xFFFF9800.toInt())
+                    tvPending?.setTextColor(ContextCompat.getColor(this, R.color.warning))
                     tvPending?.visibility = View.VISIBLE
                 } else {
                     tvPending?.visibility = View.GONE
                 }
             } catch (_: Exception) {}
 
-            // SMS status
             val smsEnabled = prefs.isSmsEnabled
             val smsText = if (smsEnabled) {
                 if (ct.isEmpty()) "SMS: Activado pero sin contactos"
@@ -208,7 +205,7 @@ class MainActivity : AppCompatActivity() {
         client.newCall(Request.Builder().url(url).build()).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 runOnUiThread {
-                    btn.text = "Buscar actualizacion"
+                    btn.text = "Actualizar"
                     btn.isEnabled = true
                     Toast.makeText(this@MainActivity, "Error: sin conexion", Toast.LENGTH_SHORT).show()
                 }
@@ -230,7 +227,7 @@ class MainActivity : AppCompatActivity() {
                         } catch (_: Exception) { 0 }
 
                         runOnUiThread {
-                            btn.text = "Buscar actualizacion"
+                            btn.text = "Actualizar"
                             btn.isEnabled = true
 
                             if (remoteCode > currentCode && apkUrl.isNotBlank()) {
@@ -248,7 +245,7 @@ class MainActivity : AppCompatActivity() {
                         }
                     } catch (e: Exception) {
                         runOnUiThread {
-                            btn.text = "Buscar actualizacion"
+                            btn.text = "Actualizar"
                             btn.isEnabled = true
                             Toast.makeText(this@MainActivity, "Error verificando: ${e.message}", Toast.LENGTH_SHORT).show()
                         }
@@ -268,7 +265,7 @@ class MainActivity : AppCompatActivity() {
         client.newCall(Request.Builder().url(apkUrl).build()).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 runOnUiThread {
-                    btn.text = "Buscar actualizacion"
+                    btn.text = "Actualizar"
                     btn.isEnabled = true
                     Toast.makeText(this@MainActivity, "Error descargando", Toast.LENGTH_SHORT).show()
                 }
@@ -283,13 +280,13 @@ class MainActivity : AppCompatActivity() {
                         }
 
                         runOnUiThread {
-                            btn.text = "Buscar actualizacion"
+                            btn.text = "Actualizar"
                             btn.isEnabled = true
                             installApk(apkFile)
                         }
                     } catch (e: Exception) {
                         runOnUiThread {
-                            btn.text = "Buscar actualizacion"
+                            btn.text = "Actualizar"
                             btn.isEnabled = true
                             Toast.makeText(this@MainActivity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
                         }
@@ -317,28 +314,97 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun themedColor(darkColorRes: Int, lightColorRes: Int): Int {
+        return ContextCompat.getColor(this, if (prefs.themeMode == "light") lightColorRes else darkColorRes)
+    }
+
     private fun applyTheme() {
+        val isLight = prefs.themeMode == "light"
         val scroll = findViewById<ScrollView>(R.id.mainScroll)
+        val container = findViewById<LinearLayout>(R.id.mainContainer)
         val btnLight = findViewById<Button>(R.id.btnThemeLight)
         val btnDark = findViewById<Button>(R.id.btnThemeDark)
 
-        if (prefs.themeMode == "light") {
-            scroll.setBackgroundColor(0xFFF5F5F5.toInt())
-            window.decorView.setBackgroundColor(0xFFF5F5F5.toInt())
-            window.statusBarColor = 0xFFF5F5F5.toInt()
-            btnLight.backgroundTintList = android.content.res.ColorStateList.valueOf(0xFF1B6B5A.toInt())
-            btnLight.setTextColor(0xFFFFFFFF.toInt())
-            btnDark.backgroundTintList = android.content.res.ColorStateList.valueOf(0xFFDDDDDD.toInt())
-            btnDark.setTextColor(0xFF666666.toInt())
+        // Colors
+        val bgColor = ContextCompat.getColor(this, if (isLight) R.color.background_light else R.color.background)
+        val cardDrawable = if (isLight) R.drawable.card_background_light else R.drawable.card_background
+        val textPrimary = ContextCompat.getColor(this, if (isLight) R.color.text_primary_light else R.color.text_primary)
+        val textSecondary = ContextCompat.getColor(this, if (isLight) R.color.text_secondary_light else R.color.text_secondary)
+        val textMuted = ContextCompat.getColor(this, if (isLight) R.color.text_muted_light else R.color.text_muted)
+        val primaryLight = ContextCompat.getColor(this, R.color.primary_light)
+        val greenColor = ContextCompat.getColor(this, R.color.green)
+        val dividerColor = ContextCompat.getColor(this, if (isLight) R.color.card_border_light else R.color.card_border)
+
+        // Background
+        scroll.setBackgroundColor(bgColor)
+        window.statusBarColor = bgColor
+        window.navigationBarColor = bgColor
+        if (isLight && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
         } else {
-            scroll.setBackgroundColor(0xFF1A1A2E.toInt())
-            window.decorView.setBackgroundColor(0xFF1A1A2E.toInt())
-            window.statusBarColor = 0xFF1A1A2E.toInt()
-            btnDark.backgroundTintList = android.content.res.ColorStateList.valueOf(0xFFE94560.toInt())
-            btnDark.setTextColor(0xFFFFFFFF.toInt())
-            btnLight.backgroundTintList = android.content.res.ColorStateList.valueOf(0xFF333355.toInt())
-            btnLight.setTextColor(0xFF999999.toInt())
+            window.decorView.systemUiVisibility = 0
         }
+
+        // Theme toggle buttons
+        if (isLight) {
+            btnLight.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.primary))
+            btnLight.setTextColor(0xFFFFFFFF.toInt())
+            btnDark.backgroundTintList = ColorStateList.valueOf(0x00000000)
+            btnDark.setTextColor(textMuted)
+        } else {
+            btnDark.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.primary))
+            btnDark.setTextColor(0xFFFFFFFF.toInt())
+            btnLight.backgroundTintList = ColorStateList.valueOf(0x00000000)
+            btnLight.setTextColor(textMuted)
+        }
+
+        // Title
+        findViewById<TextView>(R.id.tvTitle)?.setTextColor(primaryLight)
+        findViewById<TextView>(R.id.tvSubtitle)?.setTextColor(textMuted)
+
+        // Cards backgrounds
+        val cardIds = listOf(R.id.cardStatus, R.id.cardInfo, R.id.cardAlerts, R.id.cardHealth, R.id.cardContacts)
+        for (id in cardIds) {
+            findViewById<View>(id)?.setBackgroundResource(cardDrawable)
+        }
+
+        // Status card
+        findViewById<TextView>(R.id.tvStatus)?.setTextColor(textPrimary)
+
+        // Info card
+        findViewById<TextView>(R.id.tvInfoTitle)?.setTextColor(primaryLight)
+        findViewById<TextView>(R.id.tvDeviceName)?.setTextColor(textSecondary)
+        findViewById<TextView>(R.id.tvClientName)?.setTextColor(textSecondary)
+        findViewById<TextView>(R.id.tvBluetooth)?.setTextColor(textSecondary)
+
+        // Alerts card
+        findViewById<TextView>(R.id.tvAlertsTitle)?.setTextColor(primaryLight)
+        findViewById<TextView>(R.id.tvLastAlert)?.setTextColor(textSecondary)
+        findViewById<TextView>(R.id.tvLastClick)?.setTextColor(textSecondary)
+        findViewById<TextView>(R.id.tvAlertCount)?.setTextColor(textSecondary)
+
+        // Health card
+        findViewById<TextView>(R.id.tvHealthTitle)?.setTextColor(greenColor)
+        findViewById<TextView>(R.id.tvHealthDesc)?.setTextColor(textMuted)
+        findViewById<TextView>(R.id.tvHealthStatus)?.setTextColor(textSecondary)
+        try {
+            val sw = findViewById<Switch>(R.id.switchHealth)
+            sw.thumbTintList = ColorStateList.valueOf(primaryLight)
+            sw.trackTintList = ColorStateList.valueOf(ContextCompat.getColor(this, if (isLight) R.color.btn_muted_light else R.color.btn_muted))
+        } catch (_: Exception) {}
+
+        // Contacts card
+        findViewById<TextView>(R.id.tvContactsTitle)?.setTextColor(primaryLight)
+        findViewById<TextView>(R.id.tvContacts)?.setTextColor(textSecondary)
+
+        // Muted button text for light theme
+        val btnReset = findViewById<Button>(R.id.btnReset)
+        if (isLight) {
+            btnReset.setTextColor(ContextCompat.getColor(this, R.color.text_muted_light))
+        }
+
+        // Version
+        findViewById<TextView>(R.id.tvVersion)?.setTextColor(textMuted)
     }
 
     private val conn = object : ServiceConnection {
