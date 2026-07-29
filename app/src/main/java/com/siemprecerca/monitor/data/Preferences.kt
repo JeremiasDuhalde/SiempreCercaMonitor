@@ -37,6 +37,7 @@ class Preferences(context: Context) {
         private const val KEY_PHONE_BATTERY_LEVEL = "phone_battery_level"
         private const val KEY_LAST_CLICK_TIME = "last_click_time"
         private const val KEY_PENDING_ALERTS = "pending_alerts"
+        private const val KEY_THEME_MODE = "theme_mode"
     }
 
     var isSetupComplete: Boolean
@@ -156,4 +157,10 @@ class Preferences(context: Context) {
     var pendingAlerts: String
         get() = prefs.getString(KEY_PENDING_ALERTS, "[]") ?: "[]"
         set(value) = prefs.edit().putString(KEY_PENDING_ALERTS, value).apply()
+
+    // --- Theme ---
+
+    var themeMode: String
+        get() = prefs.getString(KEY_THEME_MODE, "dark") ?: "dark"
+        set(value) = prefs.edit().putString(KEY_THEME_MODE, value).apply()
 }

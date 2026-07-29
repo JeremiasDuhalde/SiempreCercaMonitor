@@ -8,6 +8,7 @@ import android.os.Environment
 import android.os.IBinder
 import android.view.View
 import android.widget.Button
+import android.widget.ScrollView
 import android.widget.Switch
 import android.widget.TextView
 import android.widget.Toast
@@ -40,6 +41,15 @@ class MainActivity : AppCompatActivity() {
         prefs = Preferences(this)
         if (!prefs.isSetupComplete) { startActivity(Intent(this, SetupActivity::class.java)); finish(); return }
         setContentView(R.layout.activity_main)
+        applyTheme()
+        findViewById<Button>(R.id.btnThemeLight).setOnClickListener {
+            prefs.themeMode = "light"
+            recreate()
+        }
+        findViewById<Button>(R.id.btnThemeDark).setOnClickListener {
+            prefs.themeMode = "dark"
+            recreate()
+        }
         try { findViewById<TextView>(R.id.tvVersion)?.text = "v${packageManager.getPackageInfo(packageName, 0).versionName}" } catch (_: Exception) {}
         try { val sw = findViewById<Switch>(R.id.switchHealth); sw.isChecked = prefs.isHealthCheckEnabled; sw.setOnCheckedChangeListener { _, c -> prefs.isHealthCheckEnabled = c } } catch (_: Exception) {}
         findViewById<Button>(R.id.btnReconnect).setOnClickListener {
@@ -304,6 +314,30 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         } catch (e: Exception) {
             Toast.makeText(this, "Error instalando: ${e.message}", Toast.LENGTH_LONG).show()
+        }
+    }
+
+    private fun applyTheme() {
+        val scroll = findViewById<ScrollView>(R.id.mainScroll)
+        val btnLight = findViewById<Button>(R.id.btnThemeLight)
+        val btnDark = findViewById<Button>(R.id.btnThemeDark)
+
+        if (prefs.themeMode == "light") {
+            scroll.setBackgroundColor(0xFFF5F5F5.toInt())
+            window.decorView.setBackgroundColor(0xFFF5F5F5.toInt())
+            window.statusBarColor = 0xFFF5F5F5.toInt()
+            btnLight.backgroundTintList = android.content.res.ColorStateList.valueOf(0xFF1B6B5A.toInt())
+            btnLight.setTextColor(0xFFFFFFFF.toInt())
+            btnDark.backgroundTintList = android.content.res.ColorStateList.valueOf(0xFFDDDDDD.toInt())
+            btnDark.setTextColor(0xFF666666.toInt())
+        } else {
+            scroll.setBackgroundColor(0xFF1A1A2E.toInt())
+            window.decorView.setBackgroundColor(0xFF1A1A2E.toInt())
+            window.statusBarColor = 0xFF1A1A2E.toInt()
+            btnDark.backgroundTintList = android.content.res.ColorStateList.valueOf(0xFFE94560.toInt())
+            btnDark.setTextColor(0xFFFFFFFF.toInt())
+            btnLight.backgroundTintList = android.content.res.ColorStateList.valueOf(0xFF333355.toInt())
+            btnLight.setTextColor(0xFF999999.toInt())
         }
     }
 

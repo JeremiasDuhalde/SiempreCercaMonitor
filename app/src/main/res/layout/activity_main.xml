@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/mainScroll"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#1A1A2E">
@@ -231,6 +232,32 @@
                 android:text="Contactos SMS: --"
                 android:textSize="15sp"
                 android:textColor="#CCCCCC" />
+        </LinearLayout>
+
+        <!-- Theme Selector -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginBottom="16dp">
+
+            <Button
+                android:id="@+id/btnThemeLight"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="40dp"
+                android:text="Modo Claro"
+                android:textSize="13sp"
+                android:layout_marginEnd="8dp" />
+
+            <Button
+                android:id="@+id/btnThemeDark"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="40dp"
+                android:text="Modo Oscuro"
+                android:textSize="13sp" />
         </LinearLayout>
 
         <!-- Buttons -->
