@@ -8,8 +8,10 @@ import android.view.View
 import android.widget.Button
 import android.widget.Switch
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.siemprecerca.monitor.data.AlertManager
 import com.siemprecerca.monitor.data.Preferences
 import com.siemprecerca.monitor.service.FlicBleService
 import io.flic.flic2libandroid.Flic2Manager
@@ -35,6 +37,17 @@ class MainActivity : AppCompatActivity() {
             try { for (b in Flic2Manager.getInstance().buttons) b.connect() } catch (_: Exception) {}
             FlicBleService.start(this)
         }
+
+        // Feature 6: Boton Test SOS
+        findViewById<Button>(R.id.btnTestSos).setOnClickListener {
+            try {
+                AlertManager(this).sendTestAlert()
+                Toast.makeText(this, "Alerta de prueba enviada", Toast.LENGTH_SHORT).show()
+            } catch (e: Exception) {
+                Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+        }
+
         findViewById<Button>(R.id.btnReset).setOnClickListener {
             AlertDialog.Builder(this).setTitle("Reconfigurar").setMessage("Detener y reconfigurar?")
                 .setPositiveButton("Si") { _, _ ->
@@ -85,12 +98,70 @@ class MainActivity : AppCompatActivity() {
             findViewById<View>(R.id.statusIndicator)?.setBackgroundResource(if (connected) R.drawable.indicator_green else R.drawable.indicator_red)
             findViewById<TextView>(R.id.tvBluetooth)?.text = "Bluetooth: Activo"
 
+            // Feature 2: Bateria FLIC
+            try {
+                val flicVoltage = prefs.flicBatteryVoltage
+                val tvFlicBattery = findViewById<TextView>(R.id.tvFlicBattery)
+                if (flicVoltage > 0f) {
+                    val voltageText = String.format(Locale.US, "%.2f", flicVoltage)
+                    if (flicVoltage < 2.5f) {
+                        tvFlicBattery?.text = "Bateria FLIC: ${voltageText}v - BAJA"
+                        tvFlicBattery?.setTextColor(0xFFFF4444.toInt())
+                    } else {
+                        tvFlicBattery?.text = "Bateria FLIC: ${voltageText}v - OK"
+                        tvFlicBattery?.setTextColor(0xFF4CAF50.toInt())
+                    }
+                } else {
+                    tvFlicBattery?.text = "Bateria FLIC: --"
+                    tvFlicBattery?.setTextColor(0xFFCCCCCC.toInt())
+                }
+            } catch (_: Exception) {}
+
+            // Feature 3: Bateria celular
+            try {
+                val phoneBattery = prefs.phoneBatteryLevel
+                val tvPhoneBattery = findViewById<TextView>(R.id.tvPhoneBattery)
+                if (phoneBattery >= 0) {
+                    tvPhoneBattery?.text = "Bateria celular: $phoneBattery%"
+                    if (phoneBattery < 15) {
+                        tvPhoneBattery?.setTextColor(0xFFFF4444.toInt())
+                    } else if (phoneBattery < 30) {
+                        tvPhoneBattery?.setTextColor(0xFFFF9800.toInt())
+                    } else {
+                        tvPhoneBattery?.setTextColor(0xFF4CAF50.toInt())
+                    }
+                } else {
+                    tvPhoneBattery?.text = "Bateria celular: --"
+                    tvPhoneBattery?.setTextColor(0xFFCCCCCC.toInt())
+                }
+            } catch (_: Exception) {}
+
             val lh = prefs.lastHealthTime
             findViewById<TextView>(R.id.tvHealthStatus)?.text = if (prefs.isHealthCheckEnabled) (if (lh > 0) "Health: ${df.format(Date(lh))}" else "Esperando...") else "Desactivado"
 
             val la = prefs.lastAlertTime
             findViewById<TextView>(R.id.tvLastAlert)?.text = "Ultima alerta: ${if (la > 0) df.format(Date(la)) else "Ninguna"}"
+
+            // Feature 4: Ultimo click
+            try {
+                val lc = prefs.lastClickTime
+                findViewById<TextView>(R.id.tvLastClick)?.text = "Ultimo click: ${if (lc > 0) df.format(Date(lc)) else "--"}"
+            } catch (_: Exception) {}
+
             findViewById<TextView>(R.id.tvAlertCount)?.text = "Total alertas: ${prefs.alertCount}"
+
+            // Feature 7: Alertas pendientes
+            try {
+                val pendingCount = AlertManager(this).getPendingCount()
+                val tvPending = findViewById<TextView>(R.id.tvPendingAlerts)
+                if (pendingCount > 0) {
+                    tvPending?.text = "Alertas pendientes: $pendingCount"
+                    tvPending?.setTextColor(0xFFFF9800.toInt())
+                    tvPending?.visibility = View.VISIBLE
+                } else {
+                    tvPending?.visibility = View.GONE
+                }
+            } catch (_: Exception) {}
 
             // SMS status
             val smsEnabled = prefs.isSmsEnabled

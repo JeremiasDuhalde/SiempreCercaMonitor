@@ -32,6 +32,11 @@ class Preferences(context: Context) {
         private const val KEY_SMS_MESSAGE_TEMPLATE = "sms_message_template"
         private const val KEY_HEALTH_CHECK_ENABLED = "health_check_enabled"
         private const val KEY_LAST_HEALTH_TIME = "last_health_time"
+        private const val KEY_FLIC_BATTERY_VOLTAGE = "flic_battery_voltage"
+        private const val KEY_FLIC_BATTERY_TIMESTAMP = "flic_battery_timestamp"
+        private const val KEY_PHONE_BATTERY_LEVEL = "phone_battery_level"
+        private const val KEY_LAST_CLICK_TIME = "last_click_time"
+        private const val KEY_PENDING_ALERTS = "pending_alerts"
     }
 
     var isSetupComplete: Boolean
@@ -123,4 +128,32 @@ class Preferences(context: Context) {
     var lastHealthTime: Long
         get() = prefs.getLong(KEY_LAST_HEALTH_TIME, 0)
         set(value) = prefs.edit().putLong(KEY_LAST_HEALTH_TIME, value).apply()
+
+    // --- FLIC Battery ---
+
+    var flicBatteryVoltage: Float
+        get() = prefs.getFloat(KEY_FLIC_BATTERY_VOLTAGE, 0f)
+        set(value) = prefs.edit().putFloat(KEY_FLIC_BATTERY_VOLTAGE, value).apply()
+
+    var flicBatteryTimestamp: Long
+        get() = prefs.getLong(KEY_FLIC_BATTERY_TIMESTAMP, 0)
+        set(value) = prefs.edit().putLong(KEY_FLIC_BATTERY_TIMESTAMP, value).apply()
+
+    // --- Phone Battery ---
+
+    var phoneBatteryLevel: Int
+        get() = prefs.getInt(KEY_PHONE_BATTERY_LEVEL, -1)
+        set(value) = prefs.edit().putInt(KEY_PHONE_BATTERY_LEVEL, value).apply()
+
+    // --- Last Click ---
+
+    var lastClickTime: Long
+        get() = prefs.getLong(KEY_LAST_CLICK_TIME, 0)
+        set(value) = prefs.edit().putLong(KEY_LAST_CLICK_TIME, value).apply()
+
+    // --- Pending Alerts (offline queue) ---
+
+    var pendingAlerts: String
+        get() = prefs.getString(KEY_PENDING_ALERTS, "[]") ?: "[]"
+        set(value) = prefs.edit().putString(KEY_PENDING_ALERTS, value).apply()
 }

@@ -89,6 +89,24 @@
                 android:layout_height="wrap_content"
                 android:text="Bluetooth: --"
                 android:textSize="16sp"
+                android:textColor="#CCCCCC"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:id="@+id/tvFlicBattery"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Bateria FLIC: --"
+                android:textSize="16sp"
+                android:textColor="#CCCCCC"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:id="@+id/tvPhoneBattery"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Bateria celular: --"
+                android:textSize="16sp"
                 android:textColor="#CCCCCC" />
         </LinearLayout>
 
@@ -120,12 +138,31 @@
                 android:layout_marginBottom="8dp" />
 
             <TextView
+                android:id="@+id/tvLastClick"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ultimo click: --"
+                android:textSize="15sp"
+                android:textColor="#CCCCCC"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
                 android:id="@+id/tvAlertCount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Total alertas: 0"
                 android:textSize="15sp"
-                android:textColor="#CCCCCC" />
+                android:textColor="#CCCCCC"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:id="@+id/tvPendingAlerts"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Alertas pendientes: 0"
+                android:textSize="15sp"
+                android:textColor="#CCCCCC"
+                android:visibility="gone" />
         </LinearLayout>
 
         <!-- Health Check Card -->
@@ -208,6 +245,16 @@
             android:layout_marginBottom="12dp" />
 
         <Button
+            android:id="@+id/btnTestSos"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:text="Test SOS"
+            android:textSize="16sp"
+            android:backgroundTint="#FF9800"
+            android:textColor="#FFFFFF"
+            android:layout_marginBottom="12dp" />
+
+        <Button
             android:id="@+id/btnReset"
             android:layout_width="match_parent"
             android:layout_height="52dp"
@@ -221,7 +268,7 @@
             android:id="@+id/tvVersion"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="v1.2.0"
+            android:text="v2.6.0"
             android:textSize="12sp"
             android:textColor="#555555"
             android:layout_marginTop="24dp" />

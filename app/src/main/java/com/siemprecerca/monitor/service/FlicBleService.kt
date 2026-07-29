@@ -1,8 +1,10 @@
 package com.siemprecerca.monitor.service
 
 import android.app.*
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.ServiceInfo
 import android.os.*
 import android.util.Log
@@ -36,6 +38,8 @@ class FlicBleService : Service() {
     private val handler = Handler(Looper.getMainLooper())
     private var healthScheduled = false
     private val binder = LocalBinder()
+    private var batteryReceiverRegistered = false
+    private var batteryLowAlertSent = false
 
     inner class LocalBinder : Binder() { fun getService() = this@FlicBleService }
     override fun onBind(intent: Intent?): IBinder = binder
@@ -44,10 +48,12 @@ class FlicBleService : Service() {
         super.onCreate()
         prefs = Preferences(this)
         createChannels()
+        registerBatteryReceiver()
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if (intent?.action == "STOP") {
+            unregisterBatteryReceiver()
             stopForeground(STOP_FOREGROUND_REMOVE); stopSelf(); return START_NOT_STICKY
         }
         try {
@@ -62,7 +68,61 @@ class FlicBleService : Service() {
         return START_STICKY
     }
 
-    override fun onDestroy() { handler.removeCallbacksAndMessages(null); super.onDestroy() }
+    override fun onDestroy() {
+        handler.removeCallbacksAndMessages(null)
+        unregisterBatteryReceiver()
+        super.onDestroy()
+    }
+
+    // --- Feature 3: Battery monitoring ---
+
+    private val batteryReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (intent?.action != Intent.ACTION_BATTERY_CHANGED) return
+            try {
+                val level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)
+                val scale = intent.getIntExtra(BatteryManager.EXTRA_SCALE, 100)
+                val pct = if (scale > 0) (level * 100) / scale else level
+                prefs.phoneBatteryLevel = pct
+                Log.d(TAG, "Bateria celular: $pct%")
+
+                // Enviar alerta si baja de 15%
+                if (pct in 1..14 && !batteryLowAlertSent) {
+                    batteryLowAlertSent = true
+                    AlertManager(this@FlicBleService).sendBatteryAlert(pct)
+                    Log.w(TAG, "Bateria baja: $pct% - alerta enviada")
+                } else if (pct >= 15) {
+                    batteryLowAlertSent = false
+                }
+
+                sendBroadcast(Intent("com.siemprecerca.monitor.STATE_CHANGED"))
+            } catch (e: Exception) {
+                Log.e(TAG, "Error procesando bateria: ${e.message}")
+            }
+        }
+    }
+
+    private fun registerBatteryReceiver() {
+        if (batteryReceiverRegistered) return
+        try {
+            val filter = IntentFilter(Intent.ACTION_BATTERY_CHANGED)
+            registerReceiver(batteryReceiver, filter)
+            batteryReceiverRegistered = true
+            Log.i(TAG, "Battery receiver registrado")
+        } catch (e: Exception) {
+            Log.e(TAG, "Error registrando battery receiver: ${e.message}")
+        }
+    }
+
+    private fun unregisterBatteryReceiver() {
+        if (!batteryReceiverRegistered) return
+        try {
+            unregisterReceiver(batteryReceiver)
+            batteryReceiverRegistered = false
+        } catch (_: Exception) {}
+    }
+
+    // --- Status & Health ---
 
     private fun getStatus(): String {
         return try {
@@ -93,10 +153,20 @@ class FlicBleService : Service() {
 
     private fun startHealth() {
         if (healthScheduled) return; healthScheduled = true
-        handler.postDelayed({ if (isConnected()) AlertManager(this).sendHealthPing() }, 10_000)
+        handler.postDelayed({
+            if (isConnected()) {
+                val am = AlertManager(this)
+                am.sendHealthPing()
+                am.flushPendingAlerts()
+            }
+        }, 10_000)
         handler.postDelayed(object : Runnable {
             override fun run() {
-                if (isConnected() && prefs.isHealthCheckEnabled) AlertManager(this@FlicBleService).sendHealthPing()
+                if (isConnected() && prefs.isHealthCheckEnabled) {
+                    val am = AlertManager(this@FlicBleService)
+                    am.sendHealthPing()
+                    am.flushPendingAlerts()
+                }
                 handler.postDelayed(this, HEALTH_INTERVAL_MS)
             }
         }, HEALTH_INTERVAL_MS)
