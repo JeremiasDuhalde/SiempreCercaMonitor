@@ -8,6 +8,7 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.animation.AnimationUtils
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -29,7 +30,7 @@ class SetupActivity : AppCompatActivity() {
 
     private var tvScanStatus: TextView? = null
     private var tvSelectedDevice: TextView? = null
-    private var btnScan: Button? = null
+    private var btnScan: View? = null
     private var progressBar: ProgressBar? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -106,8 +107,8 @@ class SetupActivity : AppCompatActivity() {
         // Descriptions
         findViewById<TextView>(R.id.tvScanDesc)?.setTextColor(textMuted)
 
-        // Scan button text for light
-        findViewById<Button>(R.id.btnScan)?.setTextColor(textPrimary)
+        // Scan label text
+        findViewById<TextView>(R.id.tvScanLabel)?.setTextColor(textMuted)
 
         // Theme toggle
         val btnLight = findViewById<Button>(R.id.btnSetupThemeLight)
@@ -173,8 +174,12 @@ class SetupActivity : AppCompatActivity() {
             }
         }
 
-        // Escanear con SDK FLIC
-        btnScan!!.setOnClickListener { startFlicScan() }
+        // Escanear con SDK FLIC (animacion + scan)
+        btnScan!!.setOnClickListener {
+            val anim = AnimationUtils.loadAnimation(this, R.anim.btn_press)
+            btnScan?.startAnimation(anim)
+            btnScan?.postDelayed({ startFlicScan() }, 150)
+        }
 
         // Activar
         findViewById<Button>(R.id.btnSave).setOnClickListener {
@@ -213,8 +218,9 @@ class SetupActivity : AppCompatActivity() {
         try { manager = Flic2Manager.getInstance() }
         catch (e: Exception) { showErr("Flic2Manager: ${e.message}"); return }
 
-        btnScan?.text = "Buscando..."
         btnScan?.isEnabled = false
+        btnScan?.alpha = 0.5f
+        findViewById<TextView>(R.id.tvScanLabel)?.text = "Buscando..."
         tvScanStatus?.text = "Presiona tu boton FLIC ahora!"
         tvScanStatus?.setTextColor(ContextCompat.getColor(this, R.color.warning))
         progressBar?.visibility = View.VISIBLE
@@ -270,8 +276,9 @@ class SetupActivity : AppCompatActivity() {
 
     private fun scanDone(msg: String) {
         progressBar?.visibility = View.GONE
-        btnScan?.text = "Buscar y vincular FLIC"
         btnScan?.isEnabled = true
+        btnScan?.alpha = 1.0f
+        findViewById<TextView>(R.id.tvScanLabel)?.text = "Toca para buscar"
         tvScanStatus?.text = msg
         tvScanStatus?.setTextColor(ContextCompat.getColor(this, R.color.green))
     }

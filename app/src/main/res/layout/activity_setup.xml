@@ -237,19 +237,37 @@
                 android:text="Toca el boton y luego presiona tu FLIC. Acepta la vinculacion cuando aparezca."
                 android:textSize="13sp"
                 android:textColor="@color/text_muted"
-                android:layout_marginBottom="14dp" />
+                android:layout_marginBottom="16dp" />
 
-            <Button
-                android:id="@+id/btnScan"
+            <!-- Boton circular con logo -->
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:text="Buscar y vincular FLIC"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                android:background="@drawable/btn_muted"
-                android:textColor="@color/text_primary"
-                android:layout_marginBottom="10dp"
-                android:stateListAnimator="@null" />
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:gravity="center">
+
+                <ImageView
+                    android:id="@+id/btnScan"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:layout_gravity="center"
+                    android:src="@mipmap/ic_launcher_foreground"
+                    android:scaleType="centerCrop"
+                    android:background="@drawable/btn_scan_circle"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:contentDescription="Buscar y vincular FLIC" />
+
+                <TextView
+                    android:id="@+id/tvScanLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal|bottom"
+                    android:text="Toca para buscar"
+                    android:textSize="12sp"
+                    android:textColor="@color/text_muted"
+                    android:layout_marginBottom="-4dp" />
+            </FrameLayout>
 
             <ProgressBar
                 android:id="@+id/progressBar"
