@@ -130,6 +130,22 @@ class SetupActivity : AppCompatActivity() {
         val etClientId = findViewById<EditText>(R.id.etClientId)
         val tvClientName = findViewById<TextView>(R.id.tvClientName)
         btnScan = findViewById(R.id.btnScan)
+        // Zoom in el logo para quitar el safe zone padding del adaptive icon
+        (btnScan as? ImageView)?.apply {
+            scaleType = ImageView.ScaleType.MATRIX
+            post {
+                val scale = 1.6f
+                val matrix = android.graphics.Matrix()
+                val dw = drawable?.intrinsicWidth?.toFloat() ?: width.toFloat()
+                val dh = drawable?.intrinsicHeight?.toFloat() ?: height.toFloat()
+                matrix.setScale(scale, scale)
+                matrix.postTranslate(
+                    (width - dw * scale) / 2f,
+                    (height - dh * scale) / 2f
+                )
+                imageMatrix = matrix
+            }
+        }
         tvScanStatus = findViewById(R.id.tvScanStatus)
         tvSelectedDevice = findViewById(R.id.tvSelectedDevice)
         progressBar = findViewById(R.id.progressBar)

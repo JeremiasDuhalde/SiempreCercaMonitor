@@ -248,12 +248,13 @@
 
                 <ImageView
                     android:id="@+id/btnScan"
-                    android:layout_width="120dp"
-                    android:layout_height="120dp"
+                    android:layout_width="140dp"
+                    android:layout_height="140dp"
                     android:layout_gravity="center"
                     android:src="@mipmap/ic_launcher_foreground"
-                    android:scaleType="centerCrop"
+                    android:scaleType="fitCenter"
                     android:background="@drawable/btn_scan_circle"
+                    android:clipToOutline="true"
                     android:clickable="true"
                     android:focusable="true"
                     android:contentDescription="Buscar y vincular FLIC" />
@@ -265,8 +266,7 @@
                     android:layout_gravity="center_horizontal|bottom"
                     android:text="Toca para buscar"
                     android:textSize="12sp"
-                    android:textColor="@color/text_muted"
-                    android:layout_marginBottom="-4dp" />
+                    android:textColor="@color/text_muted" />
             </FrameLayout>
 
             <ProgressBar

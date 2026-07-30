@@ -8,7 +8,7 @@
                 android:endColor="#0F2020"
                 android:angle="135" />
             <stroke android:width="2dp" android:color="#2A4E4E" />
-            <size android:width="120dp" android:height="120dp" />
+            <size android:width="140dp" android:height="140dp" />
         </shape>
     </item>
 </ripple>
