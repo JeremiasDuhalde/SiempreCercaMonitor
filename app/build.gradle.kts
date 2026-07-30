@@ -11,8 +11,8 @@ android {
         applicationId = "com.siemprecerca.monitor"
         minSdk = 26
         targetSdk = 36
-        versionCode = 31
-        versionName = "3.3.1"
+        versionCode = 32
+        versionName = "3.4.0"
     }
 
     buildTypes {

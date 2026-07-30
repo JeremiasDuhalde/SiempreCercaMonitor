@@ -14,14 +14,13 @@ import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.Switch
 import android.widget.TextView
-import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import com.siemprecerca.monitor.data.AlertManager
 import com.siemprecerca.monitor.data.Config
 import com.siemprecerca.monitor.data.Preferences
+import com.siemprecerca.monitor.ui.ModernDialog
 import com.siemprecerca.monitor.service.FlicBleService
 import io.flic.flic2libandroid.Flic2Manager
 import okhttp3.*
@@ -65,20 +64,25 @@ class MainActivity : AppCompatActivity() {
         findViewById<Button>(R.id.btnTestSos).setOnClickListener {
             try {
                 AlertManager(this).sendTestAlert()
-                Toast.makeText(this, "Alerta de prueba enviada", Toast.LENGTH_SHORT).show()
+                ModernDialog.success(this, "Test enviado", "La alerta de prueba se envio correctamente.")
             } catch (e: Exception) {
-                Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                ModernDialog.error(this, "Error", e.message ?: "No se pudo enviar la alerta de prueba.")
             }
         }
 
         findViewById<Button>(R.id.btnUpdate).setOnClickListener { checkForUpdate() }
 
         findViewById<Button>(R.id.btnReset).setOnClickListener {
-            AlertDialog.Builder(this).setTitle("Reconfigurar").setMessage("Detener y reconfigurar?")
-                .setPositiveButton("Si") { _, _ ->
-                    try { FlicBleService.stop(this); for (b in Flic2Manager.getInstance().buttons) Flic2Manager.getInstance().forgetButton(b) } catch (_: Exception) {}
-                    prefs.isSetupComplete = false; startActivity(Intent(this, SetupActivity::class.java)); finish()
-                }.setNegativeButton("No", null).show()
+            ModernDialog.confirm(
+                this,
+                "Reconfigurar",
+                "Se va a detener el monitoreo y desvincular el boton FLIC. Continuar?",
+                confirmText = "Si, reconfigurar",
+                cancelText = "Cancelar",
+            ) {
+                try { FlicBleService.stop(this); for (b in Flic2Manager.getInstance().buttons) Flic2Manager.getInstance().forgetButton(b) } catch (_: Exception) {}
+                prefs.isSetupComplete = false; startActivity(Intent(this, SetupActivity::class.java)); finish()
+            }
         }
         updateUI()
     }
@@ -242,7 +246,7 @@ class MainActivity : AppCompatActivity() {
                 runOnUiThread {
                     btn.text = "Actualizar"
                     btn.isEnabled = true
-                    Toast.makeText(this@MainActivity, "Error: sin conexion", Toast.LENGTH_SHORT).show()
+                    ModernDialog.error(this@MainActivity, "Sin conexion", "No se pudo verificar actualizaciones. Comprueba tu conexion a internet.")
                 }
             }
 
@@ -266,23 +270,24 @@ class MainActivity : AppCompatActivity() {
                             btn.isEnabled = true
 
                             if (remoteCode > currentCode && apkUrl.isNotBlank()) {
-                                AlertDialog.Builder(this@MainActivity)
-                                    .setTitle("Actualizacion disponible")
-                                    .setMessage("Version $remoteVersion disponible. Descargar e instalar?")
-                                    .setPositiveButton("Actualizar") { _, _ ->
-                                        downloadAndInstall("${Config.BASE_URL}$apkUrl")
-                                    }
-                                    .setNegativeButton("Despues", null)
-                                    .show()
+                                ModernDialog.confirm(
+                                    this@MainActivity,
+                                    "Actualizacion disponible",
+                                    "Version $remoteVersion disponible. Descargar e instalar?",
+                                    confirmText = "Actualizar",
+                                    cancelText = "Despues",
+                                ) {
+                                    downloadAndInstall("${Config.BASE_URL}$apkUrl")
+                                }
                             } else {
-                                Toast.makeText(this@MainActivity, "Ya tenes la ultima version", Toast.LENGTH_SHORT).show()
+                                ModernDialog.success(this@MainActivity, "Actualizado", "Ya tenes la ultima version.", autoDismissMs = 2500)
                             }
                         }
                     } catch (e: Exception) {
                         runOnUiThread {
                             btn.text = "Actualizar"
                             btn.isEnabled = true
-                            Toast.makeText(this@MainActivity, "Error verificando: ${e.message}", Toast.LENGTH_SHORT).show()
+                            ModernDialog.error(this@MainActivity, "Error", "No se pudo verificar: ${e.message}")
                         }
                     }
                 }
@@ -291,7 +296,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun downloadAndInstall(apkUrl: String) {
-        Toast.makeText(this, "Descargando actualizacion...", Toast.LENGTH_LONG).show()
+        ModernDialog.info(this, "Descargando", "Descargando actualizacion...")
         val btn = findViewById<Button>(R.id.btnUpdate)
         btn.text = "Descargando..."
         btn.isEnabled = false
@@ -302,7 +307,7 @@ class MainActivity : AppCompatActivity() {
                 runOnUiThread {
                     btn.text = "Actualizar"
                     btn.isEnabled = true
-                    Toast.makeText(this@MainActivity, "Error descargando", Toast.LENGTH_SHORT).show()
+                    ModernDialog.error(this@MainActivity, "Error", "No se pudo descargar la actualizacion.")
                 }
             }
 
@@ -323,7 +328,7 @@ class MainActivity : AppCompatActivity() {
                         runOnUiThread {
                             btn.text = "Actualizar"
                             btn.isEnabled = true
-                            Toast.makeText(this@MainActivity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                            ModernDialog.error(this@MainActivity, "Error", e.message ?: "Error al descargar")
                         }
                     }
                 }
@@ -345,7 +350,7 @@ class MainActivity : AppCompatActivity() {
             }
             startActivity(intent)
         } catch (e: Exception) {
-            Toast.makeText(this, "Error instalando: ${e.message}", Toast.LENGTH_LONG).show()
+            ModernDialog.error(this, "Error de instalacion", e.message ?: "No se pudo instalar la actualizacion.")
         }
     }
 

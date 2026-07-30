@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.siemprecerca.monitor.data.*
+import com.siemprecerca.monitor.ui.ModernDialog
 import com.siemprecerca.monitor.service.FlicBleService
 import com.siemprecerca.monitor.worker.MonitorWorker
 import io.flic.flic2libandroid.Flic2Button
@@ -59,7 +60,7 @@ class SetupActivity : AppCompatActivity() {
     }
 
     private fun showErr(msg: String) {
-        try { AlertDialog.Builder(this).setTitle("Error").setMessage(msg).setPositiveButton("OK", null).show() }
+        try { ModernDialog.error(this, "Error", msg) }
         catch (_: Exception) { Toast.makeText(this, msg, Toast.LENGTH_LONG).show() }
     }
 
@@ -220,9 +221,17 @@ class SetupActivity : AppCompatActivity() {
                 try { MonitorWorker.schedule(this) } catch (_: Exception) {}
                 btn.connect()
 
-                Toast.makeText(this, "Monitoreo activado!", Toast.LENGTH_LONG).show()
-                startActivity(Intent(this, MainActivity::class.java))
-                finish()
+                ModernDialog(this).show(
+                    com.siemprecerca.monitor.ui.DialogType.SUCCESS,
+                    "Monitoreo activado",
+                    "El sistema esta listo para recibir alertas.",
+                    primaryText = "Continuar",
+                    onPrimary = {
+                        startActivity(Intent(this, MainActivity::class.java))
+                        finish()
+                    },
+                    autoDismissMs = 0,
+                )
             } catch (e: Exception) {
                 showErr("Error: ${e.message}")
             }
@@ -262,7 +271,7 @@ class SetupActivity : AppCompatActivity() {
                 override fun onAskToAcceptPairRequest() {
                     runOnUiThread {
                         tvScanStatus?.text = "Acepta la vinculacion!"
-                        Toast.makeText(this@SetupActivity, "Acepta la vinculacion!", Toast.LENGTH_LONG).show()
+                        ModernDialog.info(this@SetupActivity, "Vinculacion", "Acepta la solicitud de vinculacion en la pantalla.")
                     }
                 }
                 override fun onComplete(result: Int, subCode: Int, button: Flic2Button?) {
@@ -275,18 +284,18 @@ class SetupActivity : AppCompatActivity() {
                             tvSelectedDevice?.visibility = View.VISIBLE
                             (application as? MonitorApp)?.addButtonListener(button)
                             button.connect()
-                            Toast.makeText(this@SetupActivity, "FLIC listo!", Toast.LENGTH_LONG).show()
+                            ModernDialog.success(this@SetupActivity, "FLIC vinculado", "El boton FLIC se vinculo correctamente.")
                         } else {
                             val err = try { Flic2Manager.errorCodeToString(result) } catch (_: Exception) { "Codigo $result" }
-                            scanDone("Error: $err")
-                            tvScanStatus?.setTextColor(ContextCompat.getColor(this@SetupActivity, R.color.red))
+                            scanDone("")
+                            ModernDialog.error(this@SetupActivity, "Error de vinculacion", "No se pudo vincular el FLIC.\n$err")
                         }
                     }
                 }
             })
         } catch (e: Exception) {
-            scanDone("Error: ${e.message}")
-            tvScanStatus?.setTextColor(ContextCompat.getColor(this, R.color.red))
+            scanDone("")
+            ModernDialog.error(this, "Error de escaneo", e.message ?: "Error desconocido")
         }
     }
 
