@@ -3,6 +3,12 @@ plugins {
     id("org.jetbrains.kotlin.android")
 }
 
+// Credenciales leidas desde gradle.properties (no en el source code)
+val monitorEmail: String by project
+val monitorPassword: String by project
+val webhookSecret: String by project
+val keystorePassword: String by project
+
 android {
     namespace = "com.siemprecerca.monitor"
     compileSdk = 36
@@ -13,12 +19,28 @@ android {
         targetSdk = 36
         versionCode = 32
         versionName = "3.4.0"
+
+        // Inyectar credenciales via BuildConfig (no hardcodeadas en source)
+        buildConfigField("String", "BASE_URL", "\"https://app.siemprecercasrl.net\"")
+        buildConfigField("String", "MONITOR_EMAIL", "\"$monitorEmail\"")
+        buildConfigField("String", "MONITOR_PASSWORD", "\"$monitorPassword\"")
+        buildConfigField("String", "WEBHOOK_SECRET", "\"$webhookSecret\"")
+    }
+
+    signingConfigs {
+        create("release") {
+            storeFile = file("siemprecerca-release.jks")
+            storePassword = keystorePassword
+            keyAlias = "siemprecerca"
+            keyPassword = keystorePassword
+        }
     }
 
     buildTypes {
         release {
             isMinifyEnabled = true
             isShrinkResources = true
+            signingConfig = signingConfigs.getByName("release")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -40,6 +62,7 @@ android {
 
     buildFeatures {
         viewBinding = true
+        buildConfig = true
     }
 }
 

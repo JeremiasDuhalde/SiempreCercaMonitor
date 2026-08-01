@@ -1,18 +1,19 @@
 package com.siemprecerca.monitor.data
 
+import com.siemprecerca.monitor.BuildConfig
+
 /**
- * Configuracion precargada de fabrica.
- * Estos valores vienen incorporados en la app para que el usuario
- * no-tecnico no tenga que ingresar datos del servidor.
+ * Configuracion de la app.
+ * Credenciales inyectadas via BuildConfig (definidas en gradle.properties).
  */
 object Config {
     // Servidor
-    const val BASE_URL = "https://app.siemprecercasrl.net"
-    const val WEBHOOK_SECRET = "4d60192711902e66a26923bfc375cb73"
+    val BASE_URL: String = BuildConfig.BASE_URL
+    val WEBHOOK_SECRET: String = BuildConfig.WEBHOOK_SECRET
 
     // Credenciales para auto-login (la app renueva el JWT sola)
-    const val LOGIN_EMAIL = "monitor@siemprecerca.app"
-    const val LOGIN_PASSWORD = "M0n1t0rSC2026"
+    val LOGIN_EMAIL: String = BuildConfig.MONITOR_EMAIL
+    val LOGIN_PASSWORD: String = BuildConfig.MONITOR_PASSWORD
 
     // SMS
     const val DEFAULT_SMS_TEMPLATE =

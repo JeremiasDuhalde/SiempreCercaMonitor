@@ -13,6 +13,7 @@ import android.os.Vibrator
 import android.os.VibratorManager
 import android.util.Log
 import com.siemprecerca.monitor.data.AlertManager
+import com.siemprecerca.monitor.data.CrashReporter
 import com.siemprecerca.monitor.data.Preferences
 import com.siemprecerca.monitor.service.FlicBleService
 import io.flic.flic2libandroid.Flic2Button
@@ -30,6 +31,10 @@ class MonitorApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
+
+        // Crash reporting (envia al servidor)
+        CrashReporter.install(this)
+
         try {
             Flic2Manager.initAndGetInstance(applicationContext, Handler(Looper.getMainLooper()))
             Log.i(TAG, "Flic2Manager inicializado")

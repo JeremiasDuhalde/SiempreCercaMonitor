@@ -1,5 +1,7 @@
 package com.siemprecerca.monitor.data
 
+import com.siemprecerca.monitor.BuildConfig
+
 data class DeviceConfig(
     val serialNumber: String,
     val macAddress: String,
@@ -36,7 +38,7 @@ data class MonitorState(
 data class AlertPayload(
     val event: String = "sos",
     val source: String = "siemprecerca_monitor",
-    val appVersion: String = "2.7.0"
+    val appVersion: String = com.siemprecerca.monitor.BuildConfig.VERSION_NAME
 )
 
 data class PendingAlert(
