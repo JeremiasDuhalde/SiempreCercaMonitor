@@ -41,13 +41,15 @@ jobs:
             echo "::warning::KEYSTORE_BASE64 no configurado, building debug"
           fi
 
-      - name: Configure signing
+      - name: Configure signing and memory
         env:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
         run: |
           if [ -n "$KEYSTORE_PASSWORD" ]; then
             sed -i "s/keystorePassword=.*/keystorePassword=$KEYSTORE_PASSWORD/" gradle.properties
           fi
+          # Mas RAM para R8/ProGuard
+          sed -i 's/org.gradle.jvmargs=.*/org.gradle.jvmargs=-Xmx2048m -Dfile.encoding=UTF-8/' gradle.properties
 
       - name: Build Release APK
         run: |
