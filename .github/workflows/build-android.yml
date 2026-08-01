@@ -30,13 +30,36 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Build Debug APK
-        run: ./gradlew assembleDebug
-
-      - name: Rename APK
+      - name: Decode keystore
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
         run: |
+          if [ -n "$KEYSTORE_BASE64" ]; then
+            echo "$KEYSTORE_BASE64" | base64 -d > app/siemprecerca-release.jks
+            echo "Keystore decoded OK"
+          else
+            echo "::warning::KEYSTORE_BASE64 no configurado, building debug"
+          fi
+
+      - name: Configure signing
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+        run: |
+          if [ -n "$KEYSTORE_PASSWORD" ]; then
+            sed -i "s/keystorePassword=.*/keystorePassword=$KEYSTORE_PASSWORD/" gradle.properties
+          fi
+
+      - name: Build Release APK
+        run: |
+          if [ -f "app/siemprecerca-release.jks" ]; then
+            ./gradlew assembleRelease
+            APK_PATH="app/build/outputs/apk/release/app-release.apk"
+          else
+            ./gradlew assembleDebug
+            APK_PATH="app/build/outputs/apk/debug/app-debug.apk"
+          fi
           VERSION=$(grep 'versionName' app/build.gradle.kts | head -1 | grep -oP '"[^"]*"' | tr -d '"')
-          cp app/build/outputs/apk/debug/app-debug.apk "siemprecerca-monitor-v${VERSION}.apk"
+          cp "$APK_PATH" "siemprecerca-monitor-v${VERSION}.apk"
           echo "APK_NAME=siemprecerca-monitor-v${VERSION}.apk" >> "$GITHUB_ENV"
           echo "APK_VERSION=${VERSION}" >> "$GITHUB_ENV"
 
@@ -70,13 +93,11 @@ jobs:
           chmod 600 ~/.ssh/deploy_key
           ssh-keyscan -H "$SSH_HOST" >> ~/.ssh/known_hosts 2>/dev/null
 
-          # Subir APK con nombre fijo (auto-update y HTML apuntan a este nombre)
           scp -i ~/.ssh/deploy_key "$APK_NAME" "${SSH_USER}@${SSH_HOST}:/opt/siemprecerca/frontend/public/monitor/siemprecerca-monitor-v1.0.0.apk"
 
-          # Copiar al container nginx
           ssh -i ~/.ssh/deploy_key "${SSH_USER}@${SSH_HOST}" "\
             cd /opt/siemprecerca && \
             docker compose cp frontend/public/monitor/siemprecerca-monitor-v1.0.0.apk frontend:/usr/share/nginx/html/monitor/siemprecerca-monitor-v1.0.0.apk && \
-            echo 'APK v${{ env.APK_VERSION }} desplegado en produccion'"
+            echo 'APK v${APK_VERSION} desplegado en produccion'"
 
           rm -f ~/.ssh/deploy_key
