@@ -97,9 +97,14 @@ jobs:
 
           scp -i ~/.ssh/deploy_key "$APK_NAME" "${SSH_USER}@${SSH_HOST}:/opt/siemprecerca/frontend/public/monitor/siemprecerca-monitor-v1.0.0.apk"
 
+          VERSION_CODE=$(grep 'versionCode' app/build.gradle.kts | head -1 | grep -oP '[0-9]+')
+          echo "{\"version\":\"${APK_VERSION}\",\"versionCode\":${VERSION_CODE},\"url\":\"/monitor/siemprecerca-monitor-v1.0.0.apk\"}" > /tmp/version.json
+          scp -i ~/.ssh/deploy_key /tmp/version.json "${SSH_USER}@${SSH_HOST}:/opt/siemprecerca/frontend/public/monitor/version.json"
+
           ssh -i ~/.ssh/deploy_key "${SSH_USER}@${SSH_HOST}" "\
             cd /opt/siemprecerca && \
             docker compose cp frontend/public/monitor/siemprecerca-monitor-v1.0.0.apk frontend:/usr/share/nginx/html/monitor/siemprecerca-monitor-v1.0.0.apk && \
-            echo 'APK v${APK_VERSION} desplegado en produccion'"
+            docker compose cp frontend/public/monitor/version.json frontend:/usr/share/nginx/html/monitor/version.json && \
+            echo 'APK v${APK_VERSION} + version.json desplegado en produccion'"
 
           rm -f ~/.ssh/deploy_key
