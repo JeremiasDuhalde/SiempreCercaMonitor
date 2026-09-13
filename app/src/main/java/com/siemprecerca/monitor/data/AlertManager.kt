@@ -304,6 +304,13 @@ class AlertManager(private val context: Context) {
         if (!prefs.isHealthCheckEnabled) return
 
         val deviceConfig = prefs.getDeviceConfig() ?: return
+
+        // Auto-registrar dispositivo si no se hizo antes
+        if (!prefs.isDeviceRegistered) {
+            authManager.registerDevice(deviceConfig.clientId, deviceConfig.serialNumber) { ok ->
+                if (ok) prefs.isDeviceRegistered = true
+            }
+        }
         val serverConfig = prefs.getServerConfig()
         val url = "${serverConfig.baseUrl}/api/webhooks/flic/alert"
         val (lat, lng) = getLastLocation()

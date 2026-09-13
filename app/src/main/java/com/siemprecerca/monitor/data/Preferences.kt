@@ -38,6 +38,7 @@ class Preferences(context: Context) {
         private const val KEY_LAST_CLICK_TIME = "last_click_time"
         private const val KEY_PENDING_ALERTS = "pending_alerts"
         private const val KEY_THEME_MODE = "theme_mode"
+        private const val KEY_DEVICE_REGISTERED = "device_registered"
     }
 
     var isSetupComplete: Boolean
@@ -163,4 +164,10 @@ class Preferences(context: Context) {
     var themeMode: String
         get() = prefs.getString(KEY_THEME_MODE, "dark") ?: "dark"
         set(value) = prefs.edit().putString(KEY_THEME_MODE, value).apply()
+
+    // --- Device Registration ---
+
+    var isDeviceRegistered: Boolean
+        get() = prefs.getBoolean(KEY_DEVICE_REGISTERED, false)
+        set(value) = prefs.edit().putBoolean(KEY_DEVICE_REGISTERED, value).apply()
 }

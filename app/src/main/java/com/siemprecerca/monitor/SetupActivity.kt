@@ -216,6 +216,8 @@ class SetupActivity : AppCompatActivity() {
                 ))
                 prefs!!.isSetupComplete = true
 
+                // Registrar dispositivo en el backend
+                try { authManager?.registerDevice(clientId, serial) } catch (_: Exception) {}
                 try { AlertManager(this).syncContacts() } catch (_: Exception) {}
                 try { FlicBleService.start(this) } catch (_: Exception) {}
                 try { MonitorWorker.schedule(this) } catch (_: Exception) {}

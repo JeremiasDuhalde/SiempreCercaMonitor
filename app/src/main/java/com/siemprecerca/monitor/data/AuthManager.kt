@@ -117,6 +117,48 @@ class AuthManager(private val prefs: Preferences) {
     }
 
     /**
+     * Registra el dispositivo FLIC en el backend, vinculandolo al cliente.
+     * Llama a POST /api/clients/assign-device.
+     */
+    fun registerDevice(clientId: Int, buttonSerial: String, callback: ((Boolean) -> Unit)? = null) {
+        ensureToken {
+            val serverConfig = prefs.getServerConfig()
+            val url = "${serverConfig.baseUrl}/api/clients/assign-device"
+
+            val body = gson.toJson(mapOf(
+                "client_id" to clientId,
+                "button_serial" to buttonSerial
+            ))
+
+            val request = Request.Builder()
+                .url(url)
+                .post(body.toRequestBody("application/json".toMediaType()))
+                .addHeader("Authorization", "Bearer ${serverConfig.authToken}")
+                .build()
+
+            httpClient.newCall(request).enqueue(object : Callback {
+                override fun onFailure(call: Call, e: IOException) {
+                    Log.e(TAG, "Error registrando dispositivo: ${e.message}")
+                    callback?.invoke(false)
+                }
+
+                override fun onResponse(call: Call, response: Response) {
+                    response.use {
+                        if (it.isSuccessful) {
+                            Log.i(TAG, "Dispositivo registrado OK: serial=$buttonSerial clientId=$clientId")
+                            callback?.invoke(true)
+                        } else {
+                            Log.e(TAG, "Error registrando dispositivo: ${it.code} ${it.body?.string()}")
+                            // 409 = ya tiene device vinculado, no es error critico
+                            callback?.invoke(it.code == 409)
+                        }
+                    }
+                }
+            })
+        }
+    }
+
+    /**
      * Asegura que haya un token valido antes de hacer un request.
      * Si no hay token, hace login primero.
      */
