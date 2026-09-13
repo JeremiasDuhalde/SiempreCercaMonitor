@@ -1,6 +1,8 @@
 package com.siemprecerca.monitor.service
 
 import android.app.*
+import android.bluetooth.BluetoothAdapter
+import android.bluetooth.BluetoothManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -23,6 +25,7 @@ class FlicBleService : Service() {
         const val CHANNEL_ID = "siemprecerca_monitor"
         const val ALERT_CHANNEL_ID = "siemprecerca_alerts"
         private const val HEALTH_INTERVAL_MS = 3_600_000L
+        const val BT_OFF_NOTIFICATION_ID = 3
 
         fun start(context: Context) {
             try { context.startForegroundService(Intent(context, FlicBleService::class.java)) }
@@ -40,6 +43,7 @@ class FlicBleService : Service() {
     private val binder = LocalBinder()
     private var batteryReceiverRegistered = false
     private var batteryLowAlertSent = false
+    private var btOffNotificationShown = false
 
     inner class LocalBinder : Binder() { fun getService() = this@FlicBleService }
     override fun onBind(intent: Intent?): IBinder = binder
@@ -125,6 +129,8 @@ class FlicBleService : Service() {
     // --- Status & Health ---
 
     private fun getStatus(): String {
+        val btAdapter = (getSystemService(Context.BLUETOOTH_SERVICE) as? BluetoothManager)?.adapter
+        if (btAdapter?.isEnabled != true) return "⚠ Bluetooth apagado"
         return try {
             val buttons = Flic2Manager.getInstance().buttons
             if (buttons.isEmpty()) "Sin botones"
@@ -146,8 +152,42 @@ class FlicBleService : Service() {
 
     private val statusUpdater = object : Runnable {
         override fun run() {
-            try { getSystemService(NotificationManager::class.java).notify(NOTIFICATION_ID, notif(getStatus())) } catch (_: Exception) {}
+            try {
+                checkBluetoothEnabled()
+                getSystemService(NotificationManager::class.java).notify(NOTIFICATION_ID, notif(getStatus()))
+            } catch (_: Exception) {}
             handler.postDelayed(this, 5000)
+        }
+    }
+
+    private fun checkBluetoothEnabled() {
+        val btAdapter = (getSystemService(Context.BLUETOOTH_SERVICE) as? BluetoothManager)?.adapter
+        val btOn = btAdapter?.isEnabled == true
+        val nm = getSystemService(NotificationManager::class.java)
+
+        if (!btOn && !btOffNotificationShown) {
+            btOffNotificationShown = true
+            val enableIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
+            val pi = PendingIntent.getActivity(
+                this, 99, enableIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+            val n = NotificationCompat.Builder(this, ALERT_CHANNEL_ID)
+                .setContentTitle("Bluetooth apagado")
+                .setContentText("Activa el Bluetooth para que el monitoreo SOS funcione")
+                .setSmallIcon(R.drawable.ic_monitor)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setCategory(NotificationCompat.CATEGORY_ALARM)
+                .setContentIntent(pi)
+                .setAutoCancel(true)
+                .setOngoing(true)
+                .build()
+            nm.notify(BT_OFF_NOTIFICATION_ID, n)
+            Log.w(TAG, "Bluetooth apagado - notificacion de alerta mostrada")
+        } else if (btOn && btOffNotificationShown) {
+            btOffNotificationShown = false
+            nm.cancel(BT_OFF_NOTIFICATION_ID)
+            Log.i(TAG, "Bluetooth encendido - notificacion de alerta cancelada")
         }
     }
 
