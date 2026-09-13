@@ -163,6 +163,7 @@ class AlertManager(private val context: Context) {
             .addHeader("X-Webhook-Secret", serverConfig.webhookSecret)
             .addHeader("button-serial-number", device.serialNumber)
             .addHeader("button-name", "Flic ${device.serialNumber}")
+            .addHeader("x-client-id", device.clientId.toString())
             .addHeader("flic-latitude", lat)
             .addHeader("flic-longitude", lng)
 
@@ -327,6 +328,7 @@ class AlertManager(private val context: Context) {
             .addHeader("X-Webhook-Secret", serverConfig.webhookSecret)
             .addHeader("button-serial-number", deviceConfig.serialNumber)
             .addHeader("button-name", "Flic ${deviceConfig.serialNumber}")
+            .addHeader("x-client-id", deviceConfig.clientId.toString())
             .addHeader("flic-latitude", lat)
             .addHeader("flic-longitude", lng)
             .build()
