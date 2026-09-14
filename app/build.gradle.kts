@@ -17,8 +17,8 @@ android {
         applicationId = "com.siemprecerca.monitor"
         minSdk = 26
         targetSdk = 36
-        versionCode = 35
-        versionName = "3.5.2"
+        versionCode = 36
+        versionName = "3.5.3"
 
         // Inyectar credenciales via BuildConfig (no hardcodeadas en source)
         buildConfigField("String", "BASE_URL", "\"https://app.siemprecercasrl.net\"")
