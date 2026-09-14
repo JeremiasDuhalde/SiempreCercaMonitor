@@ -288,15 +288,20 @@ class SetupActivity : AppCompatActivity() {
                             button.connect()
                             ModernDialog.success(this@SetupActivity, "FLIC vinculado", "El boton FLIC se vinculo correctamente.")
                         } else if (result == 2) { // Already paired with another device
-                            // Olvidar vinculacion anterior y reintentar automaticamente
                             try {
                                 val buttons = manager.buttons
                                 for (b in buttons) { manager.forgetButton(b) }
                             } catch (_: Exception) {}
                             scanDone("")
-                            tvScanStatus?.text = "Desvinculado anterior. Reintentando..."
-                            tvScanStatus?.setTextColor(ContextCompat.getColor(this@SetupActivity, R.color.warning))
-                            btnScan?.postDelayed({ startFlicScan() }, 1000)
+                            ModernDialog.info(
+                                this@SetupActivity,
+                                "FLIC vinculado a otro dispositivo",
+                                "El boton esta vinculado a otro celular.\n\n" +
+                                "Para resetearlo:\n" +
+                                "1. Mantene presionado el FLIC por 20 segundos\n" +
+                                "2. Espera a que parpadee\n" +
+                                "3. Toca el boton de buscar de nuevo"
+                            )
                         } else {
                             val err = try { Flic2Manager.errorCodeToString(result) } catch (_: Exception) { "Codigo $result" }
                             scanDone("")
