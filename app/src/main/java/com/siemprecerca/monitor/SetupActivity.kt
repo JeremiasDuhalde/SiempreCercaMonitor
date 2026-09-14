@@ -287,7 +287,7 @@ class SetupActivity : AppCompatActivity() {
                             (application as? MonitorApp)?.addButtonListener(button)
                             button.connect()
                             ModernDialog.success(this@SetupActivity, "FLIC vinculado", "El boton FLIC se vinculo correctamente.")
-                        } else if (result == Flic2ScanCallback.RESULT_ERROR_ALREADY_PAIRED_WITH_ANOTHER_DEVICE) {
+                        } else if (result == 2) { // Already paired with another device
                             // Olvidar vinculacion anterior y reintentar automaticamente
                             try {
                                 val buttons = manager.buttons
