@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Politica de Privacidad — SiempreCerca Monitor</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #1a1a1a;
+            background: #f8f9fa;
+            padding: 2rem 1rem;
+        }
+        .container {
+            max-width: 720px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 12px;
+            padding: 2.5rem 2rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+        h1 {
+            font-size: 1.5rem;
+            margin-bottom: 0.25rem;
+            color: #0d47a1;
+        }
+        .updated {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 2rem;
+        }
+        h2 {
+            font-size: 1.15rem;
+            margin-top: 1.8rem;
+            margin-bottom: 0.5rem;
+            color: #1565c0;
+        }
+        h3 {
+            font-size: 1rem;
+            margin-top: 1rem;
+            margin-bottom: 0.3rem;
+        }
+        p, li { margin-bottom: 0.5rem; }
+        ul { padding-left: 1.5rem; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            font-size: 0.95rem;
+        }
+        th, td {
+            text-align: left;
+            padding: 0.6rem 0.8rem;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        th {
+            background: #e3f2fd;
+            font-weight: 600;
+        }
+        .note {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 0.8rem 1rem;
+            margin: 1rem 0;
+            border-radius: 0 6px 6px 0;
+            font-size: 0.95rem;
+        }
+        .contact {
+            background: #e8f5e9;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+        .contact p { margin-bottom: 0.3rem; }
+        a { color: #1565c0; }
+        @media (max-width: 600px) {
+            .container { padding: 1.5rem 1rem; }
+            h1 { font-size: 1.3rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Politica de Privacidad</h1>
+        <p class="updated">SiempreCerca Monitor &mdash; Ultima actualizacion: 4 de septiembre de 2026</p>
+
+        <p>SiempreCerca SRL (&ldquo;nosotros&rdquo;, &ldquo;nuestra empresa&rdquo;) opera la aplicacion movil SiempreCerca Monitor (&ldquo;la App&rdquo;). Esta politica de privacidad describe como recopilamos, usamos y protegemos la informacion cuando utilizas nuestra App.</p>
+
+        <h2>1. Informacion que recopilamos</h2>
+
+        <h3>Informacion del dispositivo</h3>
+        <ul>
+            <li>Identificadores Bluetooth del reloj FLIC vinculado (direccion MAC BLE).</li>
+            <li>Estado de conexion Bluetooth.</li>
+        </ul>
+
+        <h3>Informacion de uso</h3>
+        <ul>
+            <li>Registro de alertas SOS activadas (fecha, hora, estado de envio).</li>
+            <li>Estado del servicio de monitoreo.</li>
+        </ul>
+
+        <h3>Informacion de contacto</h3>
+        <ul>
+            <li>Numeros de telefono de contactos de emergencia configurados por el usuario dentro de la App.</li>
+        </ul>
+
+        <h3>Informacion de red</h3>
+        <ul>
+            <li>Comunicacion con el servidor de SiempreCerca (<a href="https://app.siemprecercasrl.net">https://app.siemprecercasrl.net</a>) para enviar alertas y verificar actualizaciones.</li>
+        </ul>
+
+        <h2>2. Como usamos la informacion</h2>
+        <p>Utilizamos la informacion recopilada exclusivamente para:</p>
+        <ul>
+            <li><strong>Monitoreo BLE:</strong> Mantener la conexion Bluetooth con el reloj FLIC y detectar alertas SOS.</li>
+            <li><strong>Envio de alertas:</strong> Notificar al servidor de SiempreCerca y enviar SMS de emergencia a los contactos configurados cuando se activa una alerta SOS.</li>
+            <li><strong>Funcionamiento continuo:</strong> Asegurar que el servicio de monitoreo permanezca activo las 24 horas.</li>
+            <li><strong>Actualizaciones:</strong> Verificar y descargar actualizaciones de la App desde nuestro servidor.</li>
+        </ul>
+
+        <h2>3. Permisos de la App</h2>
+        <table>
+            <thead>
+                <tr><th>Permiso</th><th>Proposito</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>Bluetooth (BLE)</td><td>Conectar y comunicarse con el reloj FLIC</td></tr>
+                <tr><td>Ubicacion</td><td>Requerido por Android para escaneo BLE (no rastreamos ubicacion)</td></tr>
+                <tr><td>SMS</td><td>Enviar mensajes de emergencia a contactos configurados</td></tr>
+                <tr><td>Internet</td><td>Comunicacion con el servidor de SiempreCerca</td></tr>
+                <tr><td>Servicio en primer plano</td><td>Mantener el monitoreo activo en segundo plano</td></tr>
+                <tr><td>Inicio con el dispositivo</td><td>Iniciar el monitoreo automaticamente al encender el celular</td></tr>
+                <tr><td>Notificaciones</td><td>Mostrar el estado del servicio y alertas</td></tr>
+            </tbody>
+        </table>
+
+        <div class="note">
+            <strong>Nota sobre ubicacion:</strong> La App solicita permiso de ubicacion unicamente porque Android lo requiere para realizar escaneo Bluetooth Low Energy. No recopilamos, almacenamos ni transmitimos datos de ubicacion.
+        </div>
+
+        <h2>4. Comparticion de datos</h2>
+        <ul>
+            <li><strong>No vendemos</strong> informacion personal a terceros.</li>
+            <li><strong>No compartimos</strong> informacion con terceros, excepto el envio de alertas al servidor de SiempreCerca SRL, que es operado por nuestra propia empresa.</li>
+            <li>Los SMS de emergencia se envian directamente desde el dispositivo a los numeros configurados por el usuario.</li>
+        </ul>
+
+        <h2>5. Almacenamiento y seguridad</h2>
+        <ul>
+            <li>La informacion se almacena localmente en el dispositivo del usuario (SharedPreferences).</li>
+            <li>Las comunicaciones con el servidor se realizan mediante HTTPS (conexion cifrada).</li>
+            <li>No almacenamos datos personales en servidores externos mas alla del registro de alertas.</li>
+        </ul>
+
+        <h2>6. Retencion de datos</h2>
+        <ul>
+            <li>Los datos locales se eliminan al desinstalar la App.</li>
+            <li>Los registros de alertas en el servidor se retienen segun la politica de retencion del servicio de SiempreCerca.</li>
+        </ul>
+
+        <h2>7. Derechos del usuario</h2>
+        <p>Podes:</p>
+        <ul>
+            <li>Eliminar tus datos locales desinstalando la App.</li>
+            <li>Modificar o eliminar los contactos de emergencia en cualquier momento desde la App.</li>
+            <li>Solicitar la eliminacion de registros de alertas del servidor contactandonos.</li>
+        </ul>
+
+        <h2>8. Cambios a esta politica</h2>
+        <p>Podemos actualizar esta politica periodicamente. Notificaremos los cambios publicando la nueva version en esta pagina y actualizando la fecha de &ldquo;ultima actualizacion&rdquo;.</p>
+
+        <h2>9. Contacto</h2>
+        <div class="contact">
+            <p><strong>Empresa:</strong> SiempreCerca SRL</p>
+            <p><strong>Email:</strong> <a href="mailto:botondeayuda@siemprecercasrl.com">botondeayuda@siemprecercasrl.com</a></p>
+            <p><strong>Sitio web:</strong> <a href="https://app.siemprecercasrl.net">https://app.siemprecercasrl.net</a></p>
+        </div>
+    </div>
+</body>
+</html>
